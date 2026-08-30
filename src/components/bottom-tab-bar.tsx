@@ -15,6 +15,8 @@ const icons = {
   profile: ['person-outline', 'person'],
 } as const;
 
+const labels = { home: '홈', map: '지도', timeline: '타임라인', ask: 'Ask', profile: '프로필' } as const;
+
 function TabIcon({ name, focused, color }: { name: keyof typeof icons; focused: boolean; color: ColorValue }) {
   const scale = useSharedValue(focused ? 1.04 : 1);
 
@@ -36,26 +38,27 @@ function TabIcon({ name, focused, color }: { name: keyof typeof icons; focused: 
 
 export function BottomTabBar() {
   const { colors, isDark } = useTraceTheme();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         animation: 'none',
         tabBarHideOnKeyboard: true,
-        tabBarActiveTintColor: colors.text,
+        tabBarActiveTintColor: colors.traceLavender,
         tabBarInactiveTintColor: colors.tertiaryText,
         tabBarLabelStyle: typography.tabLabel,
         tabBarItemStyle: styles.item,
         tabBarStyle: [styles.bar, { borderColor: colors.border, boxShadow: shadow.raised }],
-        tabBarBackground: () => <BlurView intensity={82} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />,
+        tabBarBackground: () => <BlurView intensity={84} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />,
       }}
     >
-      {(['home', 'map', 'timeline', 'ask', 'profile'] as const).map((name) => (
+      {(Object.keys(labels) as (keyof typeof labels)[]).map((name) => (
         <Tabs.Screen
           key={name}
           name={name}
           options={{
-            title: name === 'home' ? '홈' : name === 'map' ? '지도' : name === 'timeline' ? '타임라인' : name === 'ask' ? 'Ask' : '프로필',
+            title: labels[name],
             tabBarIcon: ({ focused, color }) => <TabIcon name={name} focused={focused} color={color} />,
           }}
         />
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
     bottom: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 26,
+    borderCurve: 'continuous',
     overflow: 'hidden',
     backgroundColor: 'transparent',
     paddingTop: 5,
