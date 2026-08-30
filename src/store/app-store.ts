@@ -25,8 +25,8 @@ type AppState = {
   places: Place[];
   visits: Visit[];
   memories: Memory[];
-  deletedMemories: (Memory & { deletedAt: string })[];
-  deletedVisits: (Visit & { deletedAt: string })[];
+  deletedMemories: Array<Memory & { deletedAt: string }>;
+  deletedVisits: Array<Visit & { deletedAt: string }>;
   photos: Photo[];
   selectedPlaceId: string | null;
   selectedMemoryId: string | null;
@@ -106,6 +106,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const exists = state.visits.some((item) => item.id === visit.id);
     if (!exists) return get().addVisit(visit);
     const visits = state.visits.map((item) => item.id === visit.id ? visit : item);
+    const chronological = visits.filter((item) => item.placeId === visit.placeId).sort((left, right) => new Date(left.startedAt).getTime() - new Date(right.startedAt).getTime());
     const places = state.places.map((place) => { const rows=visits.filter(v=>v.placeId===place.id).sort((a,b)=>new Date(a.startedAt).getTime()-new Date(b.startedAt).getTime()); return rows.length ? {...place,visitCount:rows.length,firstVisitedAt:rows[0].startedAt,lastVisitedAt:rows.at(-1)?.startedAt}:place; });
     set({ visits, places, userStats: deriveUserStats(places, state.memories, visits) });
     return visit;
