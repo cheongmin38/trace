@@ -1,8 +1,8 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppHeader } from '@/components/app-header';
-import { DailySummaryCard } from '@/components/daily-summary-card';
 import { EmptyState } from '@/components/empty-state';
 import { IconButton } from '@/components/icon-button';
 import { MemoryImage } from '@/components/memory-image';
@@ -12,21 +12,42 @@ import { StatCard } from '@/components/stat-card';
 import { ThemedText } from '@/components/themed-text';
 import { getMonthlyReview } from '@/services/discovery-service';
 import { useAppStore } from '@/store/app-store';
-import { shadow, useTraceTheme } from '@/theme';
+import { radius, shadow, spacing, useTraceTheme } from '@/theme';
 
-export function HomeScreen(){
- const router=useRouter(); const {colors}=useTraceTheme(); const [today]=useState(()=>new Date()); const [loading]=useState(false);
- const visits=useAppStore(s=>s.visits), memories=useAppStore(s=>s.memories), places=useAppStore(s=>s.places);
- const dayKey=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`; const todayVisits=useMemo(()=>visits.filter(v=>v.startedAt.slice(0,10)===dayKey),[dayKey,visits]); const todayMemories=useMemo(()=>memories.filter(m=>m.startedAt.slice(0,10)===dayKey),[dayKey,memories]);
- const photoCount=todayMemories.reduce((n,m)=>n+m.photos.length,0); const duration=todayVisits.reduce((n,v)=>n+(v.durationMinutes??0),0); const monthly=getMonthlyReview(places,visits,memories,today.getFullYear(),today.getMonth()+1);
- const yearAgo=memories.find(m=>{const d=new Date(m.startedAt);const target=new Date(today);target.setFullYear(target.getFullYear()-1);return d.toDateString()===target.toDateString();}); const yearAgoPlace=places.find(p=>p.id===yearAgo?.placeId); const recent=memories.slice(0,5);
- return <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={[styles.content,{backgroundColor:colors.background}]}>
-  <AppHeader title="Trace" subtitle={today.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'})} actions={<><IconButton name="notifications-outline" label="알림" onPress={()=>router.push('/notifications')}/><IconButton name="person-circle-outline" label="프로필" onPress={()=>router.push('/profile')}/></>}/>
-  {loading?<SkeletonCard/>:<View style={[styles.hero,{backgroundColor:colors.journey,boxShadow:shadow.raised}]}><ThemedText variant="caption" style={{color:colors.journeyText}}>오늘의 Trace</ThemedText><ThemedText variant="title" style={{color:colors.journeyText}}>{todayVisits.length?`오늘 ${todayVisits.length}곳을 다녀왔어요.`:'오늘의 기록을 기다리고 있어요.'}</ThemedText><ThemedText variant="body" style={{color:colors.journeyText,opacity:.8}}>{todayVisits.length?`사진 ${photoCount}장 · 총 ${duration}분 머물렀어요.`:'방문과 사진이 쌓이면 이곳에서 보여드릴게요.'}</ThemedText><DailySummaryCard date={dayKey}/><PressableScale onPress={()=>router.push('/timeline')} style={[styles.cta,{backgroundColor:colors.journeyText}]}><ThemedText variant="headline" style={{color:colors.journey}}>오늘 기록 보기</ThemedText></PressableScale></View>}
-  <View style={styles.stats}>{[['places',todayVisits.length],['photos',photoCount],['duration',duration]].map(([label,value])=><StatCard key={String(label)} value={Number(value)} label={label==='places'?'방문 장소':label==='photos'?'사진':'체류 시간(분)'}/>)}</View>
-  <View style={styles.section}><View style={styles.heading}><ThemedText variant="title">최근 추억</ThemedText><PressableScale onPress={()=>router.push('/timeline')}><ThemedText variant="caption">모두 보기</ThemedText></PressableScale></View>{recent.length?<ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>{recent.map(memory=><PressableScale key={memory.id} onPress={()=>router.push(`/memory/${memory.id}`)} style={[styles.memory,{backgroundColor:colors.surface}]}><MemoryImage uri={memory.photos[0]?.uri??''} style={styles.photo} accessibilityLabel={memory.title}/><ThemedText variant="headline" numberOfLines={1}>{places.find(p=>p.id===memory.placeId)?.name??memory.title}</ThemedText><ThemedText variant="caption">사진 {memory.photos.length}장</ThemedText></PressableScale>)}</ScrollView>:<EmptyState title="아직 추억이 없어요" description="방문 기록이 쌓이면 최근 추억을 보여드릴게요."/>}</View>
-  {yearAgo&&yearAgoPlace?<View style={styles.section}><ThemedText variant="title">1년 전 오늘</ThemedText><PressableScale onPress={()=>router.push(`/memory/${yearAgo.id}`)} style={[styles.yearCard,{backgroundColor:colors.surface}]}><MemoryImage uri={yearAgo.photos[0]?.uri??yearAgoPlace.coverPhoto??''} style={styles.yearPhoto} accessibilityLabel={yearAgoPlace.name}/><View><ThemedText variant="headline">{yearAgoPlace.name}</ThemedText><ThemedText variant="caption">작년 같은 날의 기록</ThemedText></View></PressableScale></View>:null}
-  <View style={styles.section}><View style={styles.heading}><ThemedText variant="title">이번 달 Trace</ThemedText><PressableScale onPress={()=>router.push({pathname:'/review/[year]',params:{year:String(today.getFullYear())}})}><ThemedText variant="caption">{today.getMonth()+1}월 돌아보기</ThemedText></PressableScale></View><View style={styles.month}><StatCard value={monthly.placeCount} label="장소"/><StatCard value={monthly.memoryCount} label="방문"/><StatCard value={monthly.photoCount} label="사진"/></View></View>
- </ScrollView>
+export function HomeScreen() {
+  const router = useRouter();
+  const { colors } = useTraceTheme();
+  const [today] = useState(() => new Date());
+  const [loading] = useState(false);
+  const visits = useAppStore((state) => state.visits);
+  const memories = useAppStore((state) => state.memories);
+  const places = useAppStore((state) => state.places);
+  const dayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const todayVisits = useMemo(() => visits.filter((visit) => visit.startedAt.slice(0, 10) === dayKey), [dayKey, visits]);
+  const todayMemories = useMemo(() => memories.filter((memory) => memory.startedAt.slice(0, 10) === dayKey), [dayKey, memories]);
+  const photoCount = todayMemories.reduce((total, memory) => total + memory.photos.length, 0);
+  const duration = todayVisits.reduce((total, visit) => total + (visit.durationMinutes ?? 0), 0);
+  const monthly = getMonthlyReview(places, visits, memories, today.getFullYear(), today.getMonth() + 1);
+  const recent = [...memories].sort((a, b) => +new Date(b.startedAt) - +new Date(a.startedAt)).slice(0, 5);
+  const heroMemory = todayMemories[0] ?? recent[0];
+  const heroPlace = places.find((place) => place.id === heroMemory?.placeId);
+  const yearAgoTarget = new Date(today); yearAgoTarget.setFullYear(yearAgoTarget.getFullYear() - 1);
+  const yearAgo = memories.find((memory) => new Date(memory.startedAt).toDateString() === yearAgoTarget.toDateString());
+  const yearAgoPlace = places.find((place) => place.id === yearAgo?.placeId);
+
+  return <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={[styles.content, { backgroundColor: colors.background }]}>
+    <AppHeader title="Trace" subtitle={today.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })} actions={<><IconButton name="notifications-outline" label="알림" onPress={() => router.push('/notifications')} /><IconButton name="person-circle-outline" label="프로필" onPress={() => router.push('/profile')} /></>} />
+    {loading ? <SkeletonCard /> : <PressableScale onPress={() => router.push('/timeline')} style={[styles.hero, { backgroundColor: colors.journey, boxShadow: shadow.raised }]}>
+      {heroMemory?.photos[0]?.uri ? <MemoryImage uri={heroMemory.photos[0].uri} accessibilityLabel="오늘의 대표 추억" style={StyleSheet.absoluteFill} /> : null}
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: heroMemory ? 'rgba(18,14,11,0.48)' : colors.journey }]} />
+      <View style={styles.heroTop}><View style={styles.liveBadge}><View style={styles.liveDot} /><ThemedText variant="caption" style={styles.white}>오늘의 Trace</ThemedText></View><Ionicons name="arrow-forward" size={20} color="#fff" /></View>
+      <View style={styles.heroCopy}><ThemedText variant="screenTitle" style={styles.white}>{todayVisits.length ? `${heroPlace?.name ?? '오늘의 장소'}에서 머문 하루` : '오늘의 기록을 기다리고 있어요'}</ThemedText><ThemedText variant="body" style={styles.heroBody}>{todayVisits.length ? `${todayVisits.length}곳 · 사진 ${photoCount}장 · ${duration}분` : '방문한 장소와 그날의 사진이 하나의 기억으로 이어집니다.'}</ThemedText></View>
+    </PressableScale>}
+    <View style={styles.stats}><StatCard value={todayVisits.length} label="오늘의 장소" /><StatCard value={photoCount} label="오늘의 사진" /><StatCard value={duration} label="머문 시간" /></View>
+    <View style={styles.section}><View style={styles.sectionHeader}><View><ThemedText variant="title">최근 기억</ThemedText><ThemedText variant="caption">다시 보고 싶은 순간들</ThemedText></View><PressableScale onPress={() => router.push('/timeline')}><ThemedText variant="caption" style={{ color: colors.warm }}>전체 보기</ThemedText></PressableScale></View>{recent.length ? <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.memoryRow}>{recent.map((memory, index) => { const place = places.find((item) => item.id === memory.placeId); return <PressableScale key={memory.id} onPress={() => router.push(`/memory/${memory.id}`)} style={[styles.memoryCard, index === 0 && styles.memoryCardLarge, { backgroundColor: colors.surface, boxShadow: shadow.soft }]}><MemoryImage uri={memory.photos[0]?.uri ?? place?.coverPhoto ?? ''} style={styles.memoryPhoto} accessibilityLabel={place?.name ?? memory.title} /><View style={styles.memoryCopy}><ThemedText variant="headline" numberOfLines={1}>{place?.name ?? memory.title}</ThemedText><ThemedText variant="caption">{new Date(memory.startedAt).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })} · 사진 {memory.photos.length}장</ThemedText></View></PressableScale>; })}</ScrollView> : <EmptyState title="아직 기억이 없어요" description="Trace가 첫 장소와 사진을 연결하면 이곳에서 보여드릴게요." />}</View>
+    {yearAgo && yearAgoPlace ? <View style={styles.section}><ThemedText variant="title">1년 전 오늘</ThemedText><PressableScale onPress={() => router.push(`/memory/${yearAgo.id}`)} style={[styles.yearCard, { backgroundColor: colors.surface, boxShadow: shadow.soft }]}><MemoryImage uri={yearAgo.photos[0]?.uri ?? yearAgoPlace.coverPhoto ?? ''} style={styles.yearPhoto} accessibilityLabel={yearAgoPlace.name} /><View style={styles.yearCopy}><ThemedText variant="caption" style={{ color: colors.warm }}>ON THIS DAY</ThemedText><ThemedText variant="headline">{yearAgoPlace.name}</ThemedText><ThemedText variant="subhead">그날의 기억 다시 보기</ThemedText></View><Ionicons name="chevron-forward" size={18} color={colors.tertiaryText} /></PressableScale></View> : null}
+    <View style={styles.section}><View style={styles.sectionHeader}><View><ThemedText variant="title">이번 달</ThemedText><ThemedText variant="caption">{today.getMonth() + 1}월의 발자취</ThemedText></View><PressableScale onPress={() => router.push({ pathname: '/review/[year]', params: { year: String(today.getFullYear()) } })}><ThemedText variant="caption" style={{ color: colors.warm }}>월간 리뷰</ThemedText></PressableScale></View><View style={styles.stats}><StatCard value={monthly.placeCount} label="방문 장소" /><StatCard value={monthly.memoryCount} label="기억" /><StatCard value={monthly.photoCount} label="사진" /></View></View>
+  </ScrollView>;
 }
-const styles=StyleSheet.create({content:{padding:20,paddingBottom:120,gap:20},hero:{padding:20,borderRadius:24,gap:8},cta:{alignSelf:'flex-start',paddingHorizontal:16,paddingVertical:12,borderRadius:14,marginTop:8},stats:{flexDirection:'row',gap:8},section:{gap:12},heading:{flexDirection:'row',justifyContent:'space-between',alignItems:'center'},row:{gap:12},memory:{width:156,paddingBottom:12,borderRadius:18,overflow:'hidden',gap:4},photo:{width:'100%',aspectRatio:1},yearCard:{padding:12,borderRadius:18,flexDirection:'row',gap:12,alignItems:'center'},yearPhoto:{width:96,height:96,borderRadius:14},month:{flexDirection:'row',gap:8}});
+
+const styles = StyleSheet.create({ content: { paddingHorizontal: spacing.ml, paddingTop: spacing.sm, paddingBottom: 124, gap: spacing.lg }, hero: { minHeight: 300, borderRadius: radius.lg, borderCurve: 'continuous', overflow: 'hidden', padding: spacing.ml, justifyContent: 'space-between' }, heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, liveBadge: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, backgroundColor: 'rgba(0,0,0,0.28)', paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: radius.full }, liveDot: { width: 6, height: 6, borderRadius: radius.full, backgroundColor: '#EFA27F' }, white: { color: '#FFFFFF' }, heroCopy: { gap: spacing.xs }, heroBody: { color: 'rgba(255,255,255,0.78)' }, stats: { flexDirection: 'row', gap: spacing.xs }, section: { gap: spacing.md }, sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }, memoryRow: { gap: spacing.sm, paddingRight: spacing.ml }, memoryCard: { width: 166, borderRadius: radius.card, borderCurve: 'continuous', overflow: 'hidden' }, memoryCardLarge: { width: 218 }, memoryPhoto: { width: '100%', aspectRatio: 1.06 }, memoryCopy: { padding: spacing.sm, gap: spacing.xxs }, yearCard: { minHeight: 112, borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.sm, flexDirection: 'row', alignItems: 'center', gap: spacing.sm }, yearPhoto: { width: 88, height: 88, borderRadius: radius.md }, yearCopy: { flex: 1, gap: spacing.xxs } });

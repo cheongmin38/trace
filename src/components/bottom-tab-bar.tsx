@@ -46,7 +46,7 @@ export function BottomTabBar() {
         tabBarInactiveTintColor: colors.tertiaryText,
         tabBarLabelStyle: typography.tabLabel,
         tabBarItemStyle: styles.item,
-        tabBarStyle: [styles.bar, { borderTopColor: colors.border, boxShadow: shadow.tab }],
+        tabBarStyle: [styles.bar, { borderColor: colors.border, boxShadow: shadow.raised }],
         tabBarBackground: () => <BlurView intensity={82} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />,
       }}
     >
@@ -67,11 +67,16 @@ export function BottomTabBar() {
 const styles = StyleSheet.create({
   bar: {
     position: 'absolute',
-    height: 86,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    height: 76,
+    left: 12,
+    right: 12,
+    bottom: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 26,
+    overflow: 'hidden',
     backgroundColor: 'transparent',
-    paddingTop: 7,
-    paddingBottom: 7,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   item: { paddingVertical: 3 },
   iconSlot: { height: 30, alignItems: 'center', justifyContent: 'center', gap: 3 },

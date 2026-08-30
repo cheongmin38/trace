@@ -6,7 +6,7 @@ import { radius, spacing, useTraceTheme } from '@/theme';
 export function StatCard({ value, label }: { value: number; label: string }) {
   const { colors } = useTraceTheme();
   return (
-    <View style={[styles.root, { backgroundColor: colors.surfaceMuted }]}>
+    <View style={[styles.root, { backgroundColor: colors.surface, borderColor: colors.border }]}> 
       <CountUpText value={value} style={styles.number} />
       <ThemedText variant="caption">{label}</ThemedText>
     </View>
@@ -14,6 +14,6 @@ export function StatCard({ value, label }: { value: number; label: string }) {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, minHeight: 112, padding: spacing.md, justifyContent: 'flex-end', gap: spacing.xxs, borderRadius: radius.md, borderCurve: 'continuous' },
-  number: { fontSize: 25, lineHeight: 30, fontVariant: ['tabular-nums'] },
+  root: { flex: 1, minHeight: 94, padding: spacing.md, justifyContent: 'space-between', gap: spacing.xxs, borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth },
+  number: { fontSize: 27, lineHeight: 32, fontVariant: ['tabular-nums'], letterSpacing: -0.6 },
 });
