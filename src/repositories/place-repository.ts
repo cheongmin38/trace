@@ -3,6 +3,7 @@ import { readPersistedPlaces, writePersistedPlaces } from '@/repositories/local-
 import { places as demoPlaces } from '@/services/mock-archive';
 import type { Place } from '@/types/trace';
 import { calculateDistanceMeters, isValidCoordinates } from '@/utils/geo';
+import { demoDataEnabled } from '@/config/runtime';
 
 export type NearbyPlace = {
   place: Place;
@@ -20,7 +21,7 @@ export interface PlaceRepository {
   renamePlace(id: string, name: string): Promise<Place | null>;
 }
 
-const seedPlaces = [...demoPlaces, ...simulatorPlaces].filter(
+const seedPlaces = (demoDataEnabled ? [...demoPlaces, ...simulatorPlaces] : []).filter(
   (place, index, all) => all.findIndex((candidate) => candidate.id === place.id) === index,
 );
 

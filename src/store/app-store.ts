@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { memories as mockMemories, photos as mockPhotos, places as mockPlaces, visits as mockVisits } from '@/services/mock-archive';
 import type { AppSettings, Coordinates, Memory, Photo, Place, ThemePreference, TimelineFilter, UserStats, Visit } from '@/types/trace';
 import { deriveUserStats } from '@/utils/trace-selectors';
+import { demoDataEnabled } from '@/config/runtime';
 
 const defaultSettings: AppSettings = {
   locationTrackingEnabled: true,
@@ -12,6 +13,11 @@ const defaultSettings: AppSettings = {
   showHomeMemories: false,
   showWorkMemories: false,
 };
+
+const initialPlaces = demoDataEnabled ? mockPlaces : [];
+const initialVisits = demoDataEnabled ? mockVisits : [];
+const initialMemories = demoDataEnabled ? mockMemories : [];
+const initialPhotos = demoDataEnabled ? mockPhotos : [];
 
 type VisitInput = Omit<Visit, 'visitNumber'> & { visitNumber?: number };
 
@@ -57,12 +63,12 @@ type AppState = {
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
-  places: mockPlaces,
-  visits: mockVisits,
-  memories: mockMemories,
+  places: initialPlaces,
+  visits: initialVisits,
+  memories: initialMemories,
   deletedMemories: [],
   deletedVisits: [],
-  photos: mockPhotos,
+  photos: initialPhotos,
   selectedPlaceId: null,
   selectedMemoryId: null,
   currentLocation: null,
@@ -71,7 +77,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   timelineFilter: 'ALL',
   searchQuery: '',
   settings: defaultSettings,
-  userStats: deriveUserStats(mockPlaces, mockMemories, mockVisits),
+  userStats: deriveUserStats(initialPlaces, initialMemories, initialVisits),
 
   selectPlace: (selectedPlaceId) => set({ selectedPlaceId }),
   selectMemory: (selectedMemoryId) => {
@@ -138,12 +144,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     return { places, visits, memories, photos: [...photosById.values()], userStats: deriveUserStats(places, memories, visits) };
   }),
   resetTrackedData: () => set(() => ({
-    places: mockPlaces,
-    visits: mockVisits,
-    memories: mockMemories,
-    photos: mockPhotos,
+    places: initialPlaces,
+    visits: initialVisits,
+    memories: initialMemories,
+    photos: initialPhotos,
     currentLocation: null,
-    userStats: deriveUserStats(mockPlaces, mockMemories, mockVisits),
+    userStats: deriveUserStats(initialPlaces, initialMemories, initialVisits),
   })),
   addMemory: (memory) => set((state) => {
     const memories = [memory, ...state.memories.filter((item) => item.id !== memory.id)].sort((left, right) => new Date(right.startedAt).getTime() - new Date(left.startedAt).getTime());

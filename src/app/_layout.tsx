@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { BrandLogo } from '@/components/brand-logo';
 import { useAuthStore } from '@/store/auth-store';
 import { restoreLocationTracking } from '@/services/location-service';
+import { synchronizePersistedLocationData } from '@/services/location-pipeline';
 import { useLocationStore } from '@/store/location-store';
 import { spacing, useTraceTheme } from '@/theme';
 
@@ -26,6 +27,7 @@ export default function RootLayout() {
 
   useEffect(() => { void restoreSession(); }, [restoreSession]);
   useEffect(() => { void restoreLocationTracking(); }, []);
+  useEffect(() => { if (authInitialized && isAuthenticated) void synchronizePersistedLocationData(); }, [authInitialized, isAuthenticated]);
   useEffect(() => { if (authInitialized && locationInitialized) void SplashScreen.hideAsync(); }, [authInitialized, locationInitialized]);
 
   if (!authInitialized || !locationInitialized) {

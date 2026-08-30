@@ -5,6 +5,8 @@ import { createMemoryFromVisit } from '@/services/memory-engine';
 import { photoService, PhotoServiceError, type PhotoService } from '@/services/photo-service';
 import { useAppStore } from '@/store/app-store';
 import type { Memory, Visit } from '@/types/trace';
+import { useAuthStore } from '@/store/auth-store';
+import { syncLocalTraceData } from '@/services/cloud-trace-sync';
 
 export type MemoryProcessingOutcome = {
   status: 'completed' | 'noPhotos' | 'failed' | 'skipped';
@@ -61,7 +63,8 @@ async function processClaimedVisit(visit: Visit, syncStore: boolean): Promise<Me
       return { status: 'noPhotos', visit: noPhotosVisit, memory: null };
     }
 
-    const persistedMemory = await memoryRepository.createMemory(memory);
+    const userId = useAuthStore.getState().user?.id;
+    const persistedMemory = await memoryRepository.createMemory(userId && !userId.startsWith('mock-') ? { ...memory, userId } : memory);
     if (!persistedMemory) {
       const noUniquePhotosVisit = await visitRepository.finishMemoryProcessing(
         visit.id,
@@ -81,6 +84,7 @@ async function processClaimedVisit(visit: Visit, syncStore: boolean): Promise<Me
       persistedMemory.id,
     );
     if (syncStore) syncToAppStore(completedVisit, persistedMemory);
+    if (userId && !userId.startsWith('mock-')) void syncLocalTraceData(userId).catch((error) => console.error('Trace Memory cloud sync was deferred', error));
     debug('Memory created from ended Visit.', { visitId: visit.id, memoryId: persistedMemory.id });
     return { status: 'completed', visit: completedVisit, memory: persistedMemory };
   } catch (error) {

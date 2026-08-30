@@ -1,0 +1,22 @@
+{
+  "cleanUrls": false,
+  "rewrites": [
+    { "source": "/home", "destination": "/home.html" },
+    { "source": "/map", "destination": "/map.html" },
+    { "source": "/timeline", "destination": "/timeline.html" },
+    { "source": "/profile", "destination": "/profile.html" },
+    { "source": "/ask", "destination": "/ask.html" },
+    { "source": "/auth", "destination": "/auth.html" },
+    { "source": "/settings", "destination": "/settings.html" },
+    { "source": "/notifications", "destination": "/notifications.html" },
+    { "source": "/archive", "destination": "/archive.html" },
+    { "source": "/places", "destination": "/places.html" },
+    { "source": "/premium", "destination": "/premium.html" },
+    { "source": "/trash", "destination": "/trash.html" },
+    { "source": "/signup", "destination": "/signup.html" },
+    { "source": "/email-login", "destination": "/email-login.html" },
+    { "source": "/forgot-password", "destination": "/forgot-password.html" },
+    { "source": "/ask-trace", "destination": "/ask-trace.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
