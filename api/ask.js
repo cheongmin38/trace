@@ -1,6 +1,6 @@
 const fail = (res, status, message) => res.status(status).json({ error: message });
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') return fail(res, 405, 'Method not allowed');
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return fail(res, 503, 'AI service is not configured');
@@ -20,3 +20,5 @@ export default async function handler(req, res) {
     return fail(res, 502, 'AI provider unavailable');
   }
 }
+
+module.exports = handler;

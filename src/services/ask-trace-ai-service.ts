@@ -2,7 +2,7 @@ import type { AskTraceSearchResult } from '@/types/ask-trace-search';
 import { renderAskTraceAnswer, type AskTraceAnswer } from '@/services/ask-trace-answer-service';
 
 type CompactResult = Pick<AskTraceSearchResult, 'answerType' | 'totalResults'> & {
-  results: Array<Record<string, unknown>>;
+  results: Record<string, unknown>[];
 };
 
 const compact = (result: AskTraceSearchResult): CompactResult => ({
