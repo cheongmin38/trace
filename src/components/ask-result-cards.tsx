@@ -1,0 +1,7 @@
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { MemoryImage } from '@/components/memory-image';
+import { ThemedText } from '@/components/themed-text';
+import type { AskTraceSearchResult } from '@/types/ask-trace-search';
+export function AskResultCards({result}:{result:AskTraceSearchResult}){const router=useRouter();return <View style={styles.wrap}>{result.results.map(item=>{const title=item.place?.name??item.trip?.title??item.memory?.title??'Trace 기록';const photo=item.photo?.uri??item.memory?.photos[0]?.uri??item.place?.coverPhoto;const target=item.memory?.id?()=>router.push(`/memory/${item.memory!.id}`):item.place?.id?()=>router.push(`/place/${item.place!.id}`):undefined;return <Pressable key={item.id} onPress={target} style={styles.card}>{photo?<MemoryImage uri={photo} style={styles.photo} accessibilityLabel={title}/>:null}<View style={styles.copy}><ThemedText variant="headline">{title}</ThemedText>{item.count!==undefined?<ThemedText variant="caption">{item.count}회</ThemedText>:item.startDate?<ThemedText variant="caption">{item.startDate.slice(0,10)} · {item.endDate?.slice(0,10)}</ThemedText>:null}</View></Pressable>})}</View>}
+const styles=StyleSheet.create({wrap:{gap:10},card:{flexDirection:'row',gap:12,padding:12,borderRadius:16,backgroundColor:'#f3f4f6',alignItems:'center'},photo:{width:64,height:64,borderRadius:12},copy:{flex:1,gap:4}});

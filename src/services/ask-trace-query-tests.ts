@@ -1,0 +1,3 @@
+import { parseAskQuery } from '@/services/ask-trace-query-parser';
+export const askTraceQueryCases=['작년에 제주도 언제 갔어?','올해 가장 많이 간 카페가 어디야?','지난달 서울숲 갔던 사진 보여줘','오늘 어디 갔어?','어제 방문 기록','그저께 사진','이번주 추억','지난주 서울숲','이번달 방문 장소','지난달 부산 여행','올해 몇 군데 갔어?','재작년 제주 여행','작년 여름 바닷가 사진','올해 봄 방문','올해 여름 사진','가을 추억','겨울 여행','5월 부산 사진','지난 크리스마스 어디 갔어?','서울숲 몇 번 갔어?','성수 방문 기록','한강 사진 찾아줘','남산에 언제 갔지?','북촌 추억 보여줘','카페 사진','가장 많이 간 장소','처음 간 장소','최근 방문','여행 기록','메모리 찾아줘','없는 장소 검색'];
+export function runAskTraceQueryCases(){return askTraceQueryCases.map(question=>({question,query:parseAskQuery(question,new Date('2026-08-29T12:00:00+09:00'))}));}

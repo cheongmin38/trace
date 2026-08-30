@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "trace",
+    "slug": "trace",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/trace-logo.png",
+    "scheme": "trace",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/images/trace-logo.png",
+      "infoPlist": {
+        "CADisableMinimumFrameDurationOnPhone": true
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/trace-logo.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/trace-logo.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/trace-logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Trace가 방문한 장소를 기기 안에 자동으로 기록하기 위해 위치를 사용합니다.",
+          "locationAlwaysAndWhenInUsePermission": "Trace가 앱을 사용하지 않을 때도 방문한 장소를 기기 안에 기록하도록 위치를 허용해주세요.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Trace가 방문 시간과 사진을 연결하기 위해 사진 보관함을 사용합니다.",
+          "granularPermissions": ["photo"],
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F7F7F5",
+          "image": "./assets/images/trace-logo.png",
+          "imageWidth": 76
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

@@ -1,0 +1,2 @@
+import type { Memory, Photo, Place, Trip, Visit } from '@/types/trace';
+export type AskTraceSearchResult = { answerType:'place'|'visit'|'trip'|'statistics'|'photo'|'memory'|'date'|'none'; totalResults:number; results:Array<{id:string;place?:Place;visit?:Visit;memory?:Memory;photo?:Photo;trip?:Trip;count?:number;photoCount?:number;startDate?:string;endDate?:string;placeCount?:number;memoryIds?:string[]}> };
