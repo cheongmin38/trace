@@ -121,9 +121,10 @@ export function ProfileScreen() {
             <Ionicons name="sparkles" size={17} color={colors.aiAccent} />
             <ThemedText variant="headline" style={{ color: colors.text }}>{isPremium ? 'Trace Premium 이용 중' : 'Trace Premium'}</ThemedText>
           </View>
-          <ThemedText variant="caption" style={{ color: colors.secondaryText }}>모든 순간을 오래, 안전하게 간직하세요.</ThemedText>
+          <ThemedText variant="body" style={{ color: colors.text }}>모든 순간을 오래, 안전하게 간직하세요.</ThemedText>
+          <View style={styles.plusFeatures}><View style={[styles.feature, { backgroundColor: colors.surface }]}><ThemedText variant="caption">자동 백업</ThemedText></View><View style={[styles.feature, { backgroundColor: colors.surface }]}><ThemedText variant="caption">고화질 보관</ThemedText></View><View style={[styles.feature, { backgroundColor: colors.surface }]}><ThemedText variant="caption">무제한 추억</ThemedText></View></View>
         </View>
-        <Ionicons name="arrow-forward" size={19} color={colors.aiAccent} />
+        <View style={[styles.plusArrow, { backgroundColor: colors.text }]}><Ionicons name="arrow-forward" size={17} color={colors.onAccent} /></View>
       </PressableScale>
     </ScrollView>
   );
@@ -164,8 +165,11 @@ const styles = StyleSheet.create({
   menuRow: { minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   menuBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
   menuLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  plusCard: { minHeight: 92, flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, borderWidth: StyleSheet.hairlineWidth },
-  plusCopy: { flex: 1, gap: spacing.xs },
+  plusCard: { minHeight: 156, flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md, borderRadius: radius.lg, borderCurve: 'continuous', padding: spacing.lg, borderWidth: StyleSheet.hairlineWidth },
+  plusCopy: { flex: 1, gap: spacing.sm },
   plusTitle: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
+  plusFeatures: { flexDirection: 'row', gap: spacing.xs, flexWrap: 'wrap' },
+  feature: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: radius.full, borderCurve: 'continuous' },
+  plusArrow: { width: 36, height: 36, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center' },
   plusBody: {},
 });
