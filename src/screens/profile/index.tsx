@@ -115,16 +115,20 @@ export function ProfileScreen() {
         ))}
       </View>
 
-      <PressableScale onPress={() => router.push('/premium')} style={[styles.plusCard, { backgroundColor: colors.lavender, borderColor: colors.traceLavender, boxShadow: shadow.soft }]}>
+      <PressableScale onPress={() => router.push('/premium')} style={[styles.plusCard, { backgroundColor: colors.lavender, borderColor: colors.traceLavender, boxShadow: shadow.raised }]}>
+        <View pointerEvents="none" style={[styles.plusGlow, { backgroundColor: colors.aiAccent }]} />
+        <View pointerEvents="none" style={[styles.plusGlowSmall, { backgroundColor: colors.traceLavender }]} />
         <View style={styles.plusCopy}>
           <View style={styles.plusTitle}>
-            <Ionicons name="sparkles" size={17} color={colors.aiAccent} />
+            <View style={[styles.premiumIconTile, { backgroundColor: colors.surface, boxShadow: shadow.soft }]}>
+              <Ionicons name="sparkles" size={17} color={colors.aiAccent} />
+            </View>
             <ThemedText variant="headline" style={{ color: colors.text }}>{isPremium ? 'Trace Premium 이용 중' : 'Trace Premium'}</ThemedText>
           </View>
           <ThemedText variant="body" style={{ color: colors.text }}>모든 순간을 오래, 안전하게 간직하세요.</ThemedText>
-          <View style={styles.plusFeatures}><View style={[styles.feature, { backgroundColor: colors.surface }]}><ThemedText variant="caption">자동 백업</ThemedText></View><View style={[styles.feature, { backgroundColor: colors.surface }]}><ThemedText variant="caption">고화질 보관</ThemedText></View><View style={[styles.feature, { backgroundColor: colors.surface }]}><ThemedText variant="caption">무제한 추억</ThemedText></View></View>
+          <View style={styles.plusFeatures}><View style={[styles.feature, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}><ThemedText variant="caption">자동 백업</ThemedText></View><View style={[styles.feature, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}><ThemedText variant="caption">고화질 보관</ThemedText></View><View style={[styles.feature, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}><ThemedText variant="caption">무제한 추억</ThemedText></View></View>
         </View>
-        <View style={[styles.plusArrow, { backgroundColor: colors.text }]}><Ionicons name="arrow-forward" size={17} color={colors.onAccent} /></View>
+        <View style={[styles.plusArrow, { backgroundColor: colors.text, boxShadow: shadow.soft }]}><Ionicons name="arrow-forward" size={17} color={colors.onAccent} /></View>
       </PressableScale>
     </ScrollView>
   );
@@ -165,11 +169,14 @@ const styles = StyleSheet.create({
   menuRow: { minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   menuBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
   menuLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  plusCard: { minHeight: 156, flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md, borderRadius: radius.lg, borderCurve: 'continuous', padding: spacing.lg, borderWidth: StyleSheet.hairlineWidth },
+  plusCard: { minHeight: 156, flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md, borderRadius: radius.lg, borderCurve: 'continuous', padding: spacing.lg, borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden', position: 'relative' },
+  plusGlow: { position: 'absolute', width: 220, height: 220, borderRadius: radius.full, right: -92, top: -105, opacity: 0.2 },
+  plusGlowSmall: { position: 'absolute', width: 130, height: 130, borderRadius: radius.full, right: 38, bottom: -78, opacity: 0.16 },
   plusCopy: { flex: 1, gap: spacing.sm },
   plusTitle: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   plusFeatures: { flexDirection: 'row', gap: spacing.xs, flexWrap: 'wrap' },
-  feature: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: radius.full, borderCurve: 'continuous' },
+  premiumIconTile: { width: 38, height: 38, borderRadius: radius.md, borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center' },
+  feature: { paddingHorizontal: spacing.sm, paddingVertical: spacing.xs, borderRadius: radius.full, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth },
   plusArrow: { width: 36, height: 36, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center' },
   plusBody: {},
 });
