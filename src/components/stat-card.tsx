@@ -7,8 +7,8 @@ export function StatCard({ value, label }: { value: number; label: string }) {
   const { colors } = useTraceTheme();
   return (
     <View style={[styles.root, { backgroundColor: colors.surface, borderColor: colors.border }]}> 
-      <CountUpText value={value} style={styles.number} />
-      <ThemedText variant="caption">{label}</ThemedText>
+      <CountUpText value={value} style={[styles.number, { color: colors.text }]} />
+      <ThemedText variant="caption" numberOfLines={1}>{label}</ThemedText>
     </View>
   );
 }

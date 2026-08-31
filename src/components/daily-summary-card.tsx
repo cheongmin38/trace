@@ -3,5 +3,35 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { generateDailySummary } from '@/services/daily-summary-service';
 import { useAppStore } from '@/store/app-store';
-export function DailySummaryCard({date=new Date().toISOString().slice(0,10)}:{date?:string}){const visits=useAppStore(s=>s.visits);const places=useAppStore(s=>s.places);const memories=useAppStore(s=>s.memories);const [text,setText]=useState(''); useEffect(()=>{let active=true; const dayVisits=visits.filter(v=>v.startedAt.slice(0,10)===date); generateDailySummary({sourceDate:date,visits:dayVisits,places,photoCount:memories.filter(m=>m.startedAt.slice(0,10)===date).reduce((n,m)=>n+m.photos.length,0)}).then(r=>active&&setText(r.summary)); return()=>{active=false}},[date,visits,places,memories]); return <View style={styles.card}><ThemedText variant="caption">오늘의 Trace</ThemedText>{text?<ThemedText variant="body">{text}</ThemedText>:<ActivityIndicator/>}</View>}
-const styles=StyleSheet.create({card:{marginHorizontal:20,marginBottom:16,padding:18,borderRadius:20,backgroundColor:'#f4f1eb',gap:8}});
+import { radius, shadow, spacing, useTraceTheme } from '@/theme';
+
+export function DailySummaryCard({ date = new Date().toISOString().slice(0, 10) }: { date?: string }) {
+  const { colors } = useTraceTheme();
+  const visits = useAppStore((state) => state.visits);
+  const places = useAppStore((state) => state.places);
+  const memories = useAppStore((state) => state.memories);
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    const dayVisits = visits.filter((visit) => visit.startedAt.slice(0, 10) === date);
+    void generateDailySummary({
+      sourceDate: date,
+      visits: dayVisits,
+      places,
+      photoCount: memories.filter((memory) => memory.startedAt.slice(0, 10) === date).reduce((total, memory) => total + memory.photos.length, 0),
+    }).then((result) => { if (active) setText(result.summary); });
+    return () => { active = false; };
+  }, [date, memories, places, visits]);
+
+  return <View style={[styles.card, { backgroundColor: colors.surfaceElevated, borderColor: colors.border, boxShadow: shadow.soft }]}>
+    <View style={[styles.accent, { backgroundColor: colors.traceLavender }]} />
+    <ThemedText variant="caption" style={{ color: colors.traceLavender }}>오늘의 Trace</ThemedText>
+    {text ? <ThemedText variant="body">{text}</ThemedText> : <ActivityIndicator color={colors.traceLavender} />}
+  </View>;
+}
+
+const styles = StyleSheet.create({
+  card: { marginHorizontal: spacing.ml, marginBottom: spacing.md, padding: spacing.md, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, gap: spacing.xs, overflow: 'hidden', position: 'relative' },
+  accent: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 3 },
+});
