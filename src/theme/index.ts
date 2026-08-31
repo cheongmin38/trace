@@ -14,10 +14,10 @@ export const shadow = {
 } as const;
 export const motion = { press: 120, base: 240, sheet: 320 } as const;
 export const typography = {
-  largeTitle: { fontSize: 32, lineHeight: 39, fontWeight: '700', letterSpacing: -0.7 },
-  screenTitle: { fontSize: 30, lineHeight: 36, fontWeight: '700', letterSpacing: -0.65 },
-  title: { fontSize: 21, lineHeight: 27, fontWeight: '700', letterSpacing: -0.35 },
-  headline: { fontSize: 17, lineHeight: 23, fontWeight: '600', letterSpacing: -0.15 },
+  largeTitle: { fontSize: 32, lineHeight: 39, fontWeight: '700', letterSpacing: -0.9, fontFamily: 'System' },
+  screenTitle: { fontSize: 30, lineHeight: 36, fontWeight: '700', letterSpacing: -0.8, fontFamily: 'System' },
+  title: { fontSize: 21, lineHeight: 27, fontWeight: '700', letterSpacing: -0.45, fontFamily: 'System' },
+  headline: { fontSize: 17, lineHeight: 23, fontWeight: '600', letterSpacing: -0.25, fontFamily: 'System' },
   body: { fontSize: 16, lineHeight: 23, fontWeight: '400', letterSpacing: -0.08 },
   subhead: { fontSize: 14, lineHeight: 20, fontWeight: '400', letterSpacing: -0.04 },
   caption: { fontSize: 12, lineHeight: 17, fontWeight: '500' },
@@ -25,8 +25,8 @@ export const typography = {
 } as const satisfies Record<string, TextStyle>;
 
 const palettes = {
-  light: { background: '#F8F6F2', surface: '#FFFFFF', surfaceMuted: '#F0EEEA', surfaceElevated: '#FEFDFC', text: '#1D1A17', secondaryText: '#756F69', tertiaryText: '#AAA39C', border: '#E8E2DB', accent: '#1D1A17', accentSoft: '#EEEAE5', onAccent: '#FFFFFF', warm: '#C17052', warmSoft: '#F7E8E0', lavender: '#E9E8FA', ivory: '#F7F0E6', success: '#4D7C65', map: '#E7E9E2', mapLine: '#CED6CB', journey: '#24211F', journeyText: '#FFFFFF', scrim: 'rgba(23,18,14,0.34)', traceInk: '#10131A', traceIvory: '#FBF7F0', traceLavender: '#9A8CE2', aiAccent: '#B8A9FF' },
-  dark: { background: '#0D0D0D', surface: '#171717', surfaceMuted: '#222220', surfaceElevated: '#1D1D1B', text: '#FAFAF8', secondaryText: '#A3A3A0', tertiaryText: '#70706D', border: '#2A2A28', accent: '#F5F5F2', accentSoft: '#292927', onAccent: '#111111', warm: '#DEA088', warmSoft: '#382923', lavender: '#26263B', ivory: '#2E2922', success: '#7CAA91', map: '#20231F', mapLine: '#343934', journey: '#1B1B1A', journeyText: '#FFFFFF', scrim: 'rgba(0,0,0,0.58)', traceInk: '#10131A', traceIvory: '#FBF7F0', traceLavender: '#A99CF2', aiAccent: '#B8A9FF' },
+  light: { background: '#F7F5FF', surface: '#FFFFFF', surfaceMuted: '#EFEDFA', surfaceElevated: '#FCFBFF', text: '#171525', secondaryText: '#716D82', tertiaryText: '#AAA6B8', border: '#E4E0F0', accent: '#6657D9', accentSoft: '#E9E6FF', onAccent: '#FFFFFF', warm: '#D47A62', warmSoft: '#FBE9E4', lavender: '#E8E4FF', ivory: '#FBF7F0', success: '#4F8A71', map: '#E9E8F2', mapLine: '#D3D0DE', journey: '#26213D', journeyText: '#FFFFFF', scrim: 'rgba(23,18,34,0.34)', traceInk: '#161426', traceIvory: '#FBF7F0', traceLavender: '#8B7DEA', aiAccent: '#B8A9FF' },
+  dark: { background: '#0E0D18', surface: '#181726', surfaceMuted: '#242237', surfaceElevated: '#201F31', text: '#F9F8FF', secondaryText: '#AAA6BC', tertiaryText: '#77738D', border: '#302D48', accent: '#A99CF2', accentSoft: '#302B52', onAccent: '#171525', warm: '#E0A18D', warmSoft: '#402B32', lavender: '#302B52', ivory: '#332D27', success: '#7DB99E', map: '#1B1A2B', mapLine: '#39364B', journey: '#282343', journeyText: '#FFFFFF', scrim: 'rgba(0,0,0,0.62)', traceInk: '#0E0D18', traceIvory: '#FBF7F0', traceLavender: '#B2A6FF', aiAccent: '#C1B6FF' },
 } as const;
 
 export type TraceColors = (typeof palettes)['light'];
