@@ -20,7 +20,7 @@ const menuRows = [
 
 export function ProfileScreen() {
   const router = useRouter();
-  const { colors } = useTraceTheme();
+  const { colors, isDark } = useTraceTheme();
   const memories = useAppStore((state) => state.memories);
   const places = useAppStore((state) => state.places);
   const visits = useAppStore((state) => state.visits);
@@ -65,7 +65,8 @@ export function ProfileScreen() {
         </PressableScale>
       </View>
 
-      <View style={[styles.stats, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}>
+      <View style={[styles.stats, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.card }]}>
+        <View pointerEvents="none" style={[styles.surfaceSheen, { backgroundColor: isDark ? 'rgba(255,255,255,0.035)' : 'rgba(255,255,255,0.58)' }]} />
         <ProfileStat value={userStats.placeCount} label="기록한 장소" colors={colors} />
         <View style={styles.divider} />
         <ProfileStat value={userStats.photoCount} label="기록한 사진" colors={colors} />
@@ -78,7 +79,8 @@ export function ProfileScreen() {
           <ThemedText variant="headline" style={{ color: colors.text }}>나의 Top 장소</ThemedText>
           <PressableScale onPress={() => router.push('/places')}><ThemedText variant="caption" style={{ color: colors.traceLavender }}>전체 보기</ThemedText></PressableScale>
         </View>
-        <View style={[styles.topPlaces, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}>
+        <View style={[styles.topPlaces, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.card }]}>
+          <View pointerEvents="none" style={[styles.surfaceSheen, { backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.48)' }]} />
           {topPlaces.length ? topPlaces.map((place, index) => (
             <PressableScale
               key={place.id}
@@ -97,7 +99,8 @@ export function ProfileScreen() {
         </View>
       </View>
 
-      <View style={[styles.menuGroup, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}>
+      <View style={[styles.menuGroup, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.card }]}>
+        <View pointerEvents="none" style={[styles.surfaceSheen, { backgroundColor: isDark ? 'rgba(255,255,255,0.028)' : 'rgba(255,255,255,0.46)' }]} />
         {menuRows.map((item, index) => (
           <PressableScale
             key={item.label}
@@ -154,18 +157,19 @@ const styles = StyleSheet.create({
   white: {},
   muted: {},
   lavender: {},
-  stats: { minHeight: 92, flexDirection: 'row', alignItems: 'center', borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.sm },
+  stats: { minHeight: 92, flexDirection: 'row', alignItems: 'center', borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.sm, overflow: 'hidden', position: 'relative' },
   stat: { flex: 1, alignItems: 'center', gap: 3 },
   statValue: { color: '#F8F7F3', fontVariant: ['tabular-nums'] },
   divider: { width: StyleSheet.hairlineWidth, height: 38, backgroundColor: '#303541' },
   section: { gap: spacing.sm },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  topPlaces: { borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.md, paddingVertical: spacing.xs },
+  topPlaces: { borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.md, paddingVertical: spacing.xs, overflow: 'hidden', position: 'relative' },
   placeRow: { minHeight: 66, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   rank: { width: 22, color: '#777B85', textAlign: 'center', fontVariant: ['tabular-nums'] },
   placePhoto: { width: 46, height: 46, borderRadius: radius.md },
   placeCopy: { flex: 1, gap: 2 },
-  menuGroup: { borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.md, overflow: 'hidden' },
+  menuGroup: { borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.md, overflow: 'hidden', position: 'relative' },
+  surfaceSheen: { position: 'absolute', left: 0, right: 0, top: 0, height: 26 },
   menuRow: { minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   menuBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
   menuLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
