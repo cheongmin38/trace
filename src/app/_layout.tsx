@@ -39,7 +39,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={[styles.root, process.env.EXPO_OS === 'web' && styles.webRoot]}>
       <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
         <StatusBar style={isDark ? 'light' : 'dark'} />
-        <Stack screenOptions={{ headerShadowVisible: false, headerBackButtonDisplayMode: 'minimal', headerStyle: { backgroundColor: colors.background }, contentStyle: { backgroundColor: colors.background }, animation: reducedMotion ? 'fade' : 'default' }}>
+        <Stack screenOptions={{ headerShown: false, headerShadowVisible: false, headerBackButtonDisplayMode: 'minimal', headerStyle: { backgroundColor: colors.background }, contentStyle: { backgroundColor: colors.background }, animation: reducedMotion ? 'fade' : 'default' }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="auth" options={{ headerShown: false }} />
           <Stack.Screen name="email-login" options={{ title: '이메일 로그인' }} />
