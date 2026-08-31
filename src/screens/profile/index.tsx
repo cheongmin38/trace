@@ -43,42 +43,42 @@ export function ProfileScreen() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      style={{ backgroundColor: colors.traceInk }}
+      style={{ backgroundColor: colors.background }}
       contentContainerStyle={styles.content}
     >
       <View style={styles.topBar}>
-        <ThemedText variant="headline" style={styles.brand}>Trace</ThemedText>
-        <PressableScale onPress={() => router.push('/settings')} style={styles.iconButton} accessibilityLabel="설정 열기">
-          <Ionicons name="settings-outline" size={21} color="#F8F7F3" />
+        <ThemedText variant="headline" style={{ color: colors.text }}>Trace</ThemedText>
+        <PressableScale onPress={() => router.push('/settings')} style={[styles.iconButton, { backgroundColor: colors.surface, borderColor: colors.border }]} accessibilityLabel="설정 열기">
+          <Ionicons name="settings-outline" size={21} color={colors.text} />
         </PressableScale>
       </View>
 
       <View style={styles.identity}>
         <MemoryImage uri={avatarUri} accessibilityLabel={`${displayName} 프로필 사진`} style={styles.avatar} />
         <View style={styles.identityCopy}>
-          <ThemedText variant="title" style={styles.white}>{displayName}</ThemedText>
-          <ThemedText variant="caption" style={styles.muted}>{handle}</ThemedText>
-          <ThemedText variant="caption" style={styles.muted}>Trace와 함께한 지 {Math.max(1, year - joinedYear + 1)}년</ThemedText>
+          <ThemedText variant="title" style={{ color: colors.text }}>{displayName}</ThemedText>
+          <ThemedText variant="caption" style={{ color: colors.secondaryText }}>{handle}</ThemedText>
+          <ThemedText variant="caption" style={{ color: colors.secondaryText }}>Trace와 함께한 지 {Math.max(1, year - joinedYear + 1)}년</ThemedText>
         </View>
         <PressableScale onPress={() => router.push('/notifications')} style={styles.iconButton} accessibilityLabel="알림 열기">
-          <Ionicons name="notifications-outline" size={21} color="#F8F7F3" />
+          <Ionicons name="notifications-outline" size={21} color={colors.text} />
         </PressableScale>
       </View>
 
-      <View style={styles.stats}>
-        <ProfileStat value={userStats.placeCount} label="기록한 장소" />
+      <View style={[styles.stats, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}>
+        <ProfileStat value={userStats.placeCount} label="기록한 장소" colors={colors} />
         <View style={styles.divider} />
-        <ProfileStat value={userStats.photoCount} label="기록한 사진" />
+        <ProfileStat value={userStats.photoCount} label="기록한 사진" colors={colors} />
         <View style={styles.divider} />
-        <ProfileStat value={userStats.visitCount} label="방문 기록" />
+        <ProfileStat value={userStats.visitCount} label="방문 기록" colors={colors} />
       </View>
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <ThemedText variant="headline" style={styles.white}>나의 Top 장소</ThemedText>
-          <PressableScale onPress={() => router.push('/places')}><ThemedText variant="caption" style={styles.lavender}>전체 보기</ThemedText></PressableScale>
+          <ThemedText variant="headline" style={{ color: colors.text }}>나의 Top 장소</ThemedText>
+          <PressableScale onPress={() => router.push('/places')}><ThemedText variant="caption" style={{ color: colors.traceLavender }}>전체 보기</ThemedText></PressableScale>
         </View>
-        <View style={styles.topPlaces}>
+        <View style={[styles.topPlaces, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}>
           {topPlaces.length ? topPlaces.map((place, index) => (
             <PressableScale
               key={place.id}
@@ -88,16 +88,16 @@ export function ProfileScreen() {
               <ThemedText variant="headline" style={styles.rank}>{index + 1}</ThemedText>
               <MemoryImage uri={place.coverPhoto ?? ''} accessibilityLabel={place.name} style={styles.placePhoto} />
               <View style={styles.placeCopy}>
-                <ThemedText variant="headline" style={styles.white} numberOfLines={1}>{place.name}</ThemedText>
-                <ThemedText variant="caption" style={styles.muted}>{place.address ?? '주소 정보 없음'}</ThemedText>
+              <ThemedText variant="headline" style={{ color: colors.text }} numberOfLines={1}>{place.name}</ThemedText>
+                <ThemedText variant="caption" style={{ color: colors.secondaryText }}>{place.address ?? '주소 정보 없음'}</ThemedText>
               </View>
-              <ThemedText variant="caption" style={styles.lavender}>{place.actualVisits}회</ThemedText>
+              <ThemedText variant="caption" style={{ color: colors.traceLavender }}>{place.actualVisits}회</ThemedText>
             </PressableScale>
           )) : <ThemedText variant="body" style={styles.muted}>방문 기록이 쌓이면 자주 간 장소를 보여드릴게요.</ThemedText>}
         </View>
       </View>
 
-      <View style={styles.menuGroup}>
+      <View style={[styles.menuGroup, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}>
         {menuRows.map((item, index) => (
           <PressableScale
             key={item.label}
@@ -107,21 +107,21 @@ export function ProfileScreen() {
             style={[styles.menuRow, index < menuRows.length - 1 && styles.menuBorder]}
           >
             <View style={styles.menuLabel}>
-              <Ionicons name={item.icon} size={19} color="#E9E7E2" />
-              <ThemedText variant="body" style={styles.white}>{item.label}</ThemedText>
+              <Ionicons name={item.icon} size={19} color={colors.text} />
+              <ThemedText variant="body" style={{ color: colors.text }}>{item.label}</ThemedText>
             </View>
-            <Ionicons name="chevron-forward" size={17} color="#6F7178" />
+            <Ionicons name="chevron-forward" size={17} color={colors.tertiaryText} />
           </PressableScale>
         ))}
       </View>
 
-      <PressableScale onPress={() => router.push('/premium')} style={[styles.plusCard, { boxShadow: shadow.raised }]}>
+      <PressableScale onPress={() => router.push('/premium')} style={[styles.plusCard, { backgroundColor: colors.lavender, borderColor: colors.traceLavender, boxShadow: shadow.soft }]}>
         <View style={styles.plusCopy}>
           <View style={styles.plusTitle}>
             <Ionicons name="sparkles" size={17} color={colors.aiAccent} />
-            <ThemedText variant="headline" style={styles.white}>{isPremium ? 'Trace Plus 이용 중' : 'Trace Plus'}</ThemedText>
+            <ThemedText variant="headline" style={{ color: colors.text }}>{isPremium ? 'Trace Premium 이용 중' : 'Trace Premium'}</ThemedText>
           </View>
-          <ThemedText variant="caption" style={styles.plusBody}>모든 기억을 더 오래, 안전하게 간직하세요.</ThemedText>
+          <ThemedText variant="caption" style={{ color: colors.secondaryText }}>모든 순간을 오래, 안전하게 간직하세요.</ThemedText>
         </View>
         <Ionicons name="arrow-forward" size={19} color={colors.aiAccent} />
       </PressableScale>
@@ -129,11 +129,11 @@ export function ProfileScreen() {
   );
 }
 
-function ProfileStat({ value, label }: { value: number; label: string }) {
+function ProfileStat({ value, label, colors }: { value: number; label: string; colors: ReturnType<typeof useTraceTheme>['colors'] }) {
   return (
     <View style={styles.stat}>
-      <CountUpText value={value} variant="title" style={styles.statValue} />
-      <ThemedText variant="caption" style={styles.muted}>{label}</ThemedText>
+      <CountUpText value={value} variant="title" style={[styles.statValue, { color: colors.text }]} />
+      <ThemedText variant="caption" style={{ color: colors.secondaryText }}>{label}</ThemedText>
     </View>
   );
 }
@@ -141,31 +141,31 @@ function ProfileStat({ value, label }: { value: number; label: string }) {
 const styles = StyleSheet.create({
   content: { flexGrow: 1, paddingHorizontal: spacing.ml, paddingTop: spacing.md, paddingBottom: 124, gap: spacing.lg },
   topBar: { minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  brand: { color: '#F8F7F3', fontFamily: 'serif' },
-  iconButton: { width: 44, height: 44, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center', backgroundColor: '#1A1E27' },
+  brand: { fontFamily: 'serif' },
+  iconButton: { width: 44, height: 44, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center', borderWidth: StyleSheet.hairlineWidth },
   identity: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   avatar: { width: 76, height: 76, borderRadius: radius.full, borderWidth: 2, borderColor: '#343944' },
   identityCopy: { flex: 1, gap: 2 },
-  white: { color: '#F8F7F3' },
-  muted: { color: '#969AA4' },
-  lavender: { color: '#B8A9FF' },
-  stats: { minHeight: 92, flexDirection: 'row', alignItems: 'center', borderRadius: radius.card, borderCurve: 'continuous', backgroundColor: '#181C25', paddingHorizontal: spacing.sm },
+  white: {},
+  muted: {},
+  lavender: {},
+  stats: { minHeight: 92, flexDirection: 'row', alignItems: 'center', borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.sm },
   stat: { flex: 1, alignItems: 'center', gap: 3 },
   statValue: { color: '#F8F7F3', fontVariant: ['tabular-nums'] },
   divider: { width: StyleSheet.hairlineWidth, height: 38, backgroundColor: '#303541' },
   section: { gap: spacing.sm },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  topPlaces: { borderRadius: radius.card, borderCurve: 'continuous', backgroundColor: '#181C25', paddingHorizontal: spacing.md, paddingVertical: spacing.xs },
+  topPlaces: { borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.md, paddingVertical: spacing.xs },
   placeRow: { minHeight: 66, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   rank: { width: 22, color: '#777B85', textAlign: 'center', fontVariant: ['tabular-nums'] },
   placePhoto: { width: 46, height: 46, borderRadius: radius.md },
   placeCopy: { flex: 1, gap: 2 },
-  menuGroup: { borderRadius: radius.card, borderCurve: 'continuous', backgroundColor: '#181C25', paddingHorizontal: spacing.md, overflow: 'hidden' },
+  menuGroup: { borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.md, overflow: 'hidden' },
   menuRow: { minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  menuBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2D323C' },
+  menuBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
   menuLabel: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  plusCard: { minHeight: 92, flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, backgroundColor: '#24213B', borderWidth: StyleSheet.hairlineWidth, borderColor: '#4A426D' },
+  plusCard: { minHeight: 92, flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, borderWidth: StyleSheet.hairlineWidth },
   plusCopy: { flex: 1, gap: spacing.xs },
   plusTitle: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
-  plusBody: { color: '#B8B2C9' },
+  plusBody: {},
 });
