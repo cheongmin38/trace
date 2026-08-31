@@ -123,9 +123,9 @@ export default function SettingsScreen() {
         </PressableScale>
 
         <SectionTitle title="지원" />
-        <View style={styles.group}>
+        <View style={[styles.group, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           {['개인정보 처리방침', '이용약관', '앱 버전 1.0.0'].map((label, index, labels) => (
-            <PressableScale key={label} onPress={() => Alert.alert(label, label === '앱 버전 1.0.0' ? 'Trace 1.0.0 · Expo SDK 56' : '출시 전 공식 문서 주소가 연결될 예정입니다.')} style={[styles.infoRow, index < labels.length - 1 && styles.rowBorder]}>
+            <PressableScale key={label} onPress={() => Alert.alert(label, label === '앱 버전 1.0.0' ? 'Trace 1.0.0 · Expo SDK 56' : '출시 전 공식 문서 주소가 연결될 예정입니다.')} style={[styles.infoRow, index < labels.length - 1 && styles.rowBorder, { borderBottomColor: colors.border }]}>
               <ThemedText variant="body" style={styles.white}>{label}</ThemedText><Ionicons name="chevron-forward" size={17} color="#6F737D" />
             </PressableScale>
           ))}
