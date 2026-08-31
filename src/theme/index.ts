@@ -3,16 +3,16 @@ import { useColorScheme } from 'react-native';
 import { useAppStore } from '@/store/app-store';
 
 export const spacing = { xxs: 4, xs: 8, sm: 12, md: 16, ml: 20, lg: 24, xl: 32, xxl: 40, xxxl: 48 } as const;
-export const radius = { sm: 10, md: 14, card: 20, lg: 28, full: 999 } as const;
+export const radius = { sm: 10, md: 15, card: 22, lg: 30, full: 999 } as const;
 export const shadow = {
-  soft: '0 1px 10px rgba(37, 30, 24, 0.05)',
-  card: '0 8px 24px rgba(37, 30, 24, 0.07)',
-  raised: '0 16px 38px rgba(28, 22, 18, 0.15)',
+  soft: '0 2px 14px rgba(37, 30, 24, 0.06)',
+  card: '0 10px 28px rgba(37, 30, 24, 0.08)',
+  raised: '0 18px 42px rgba(28, 22, 18, 0.17)',
   marker: '0 5px 14px rgba(15, 15, 15, 0.18)',
   tab: '0 -8px 28px rgba(15, 15, 15, 0.055)',
   cta: '0 8px 20px rgba(15, 15, 15, 0.12)',
 } as const;
-export const motion = { press: 120, base: 220, sheet: 300 } as const;
+export const motion = { press: 120, base: 240, sheet: 320 } as const;
 export const typography = {
   largeTitle: { fontSize: 32, lineHeight: 39, fontWeight: '700', letterSpacing: -0.7 },
   screenTitle: { fontSize: 30, lineHeight: 36, fontWeight: '700', letterSpacing: -0.65 },
