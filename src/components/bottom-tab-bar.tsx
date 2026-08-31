@@ -28,6 +28,7 @@ function TabIcon({ name, focused, color }: { name: keyof typeof icons; focused: 
 
   return (
     <View style={styles.iconSlot}>
+      <View style={[styles.activePill, { backgroundColor: color, opacity: focused ? 0.12 : 0 }]} />
       <Animated.View style={animatedStyle}>
         <Ionicons name={icons[name][focused ? 1 : 0]} size={focused ? 23 : 22} color={color} />
       </Animated.View>
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   item: { paddingVertical: 3 },
-  iconSlot: { height: 30, alignItems: 'center', justifyContent: 'center', gap: 3 },
+  iconSlot: { height: 32, minWidth: 44, alignItems: 'center', justifyContent: 'center', gap: 2, position: 'relative' },
+  activePill: { position: 'absolute', width: 42, height: 30, borderRadius: 15 },
   activeDot: { width: 3, height: 3, borderRadius: 999 },
 });
