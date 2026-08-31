@@ -85,8 +85,8 @@ export default function SettingsScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: '설정', headerStyle: { backgroundColor: colors.traceInk }, headerTintColor: '#F8F7F3' }} />
-      <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.screen} contentContainerStyle={styles.content}>
+      <Stack.Screen options={{ title: '설정', headerStyle: { backgroundColor: colors.background }, headerTintColor: colors.text }} />
+      <ScrollView contentInsetAdjustmentBehavior="automatic" style={[styles.screen, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <ThemedText variant="largeTitle" style={styles.white}>설정</ThemedText>
           <ThemedText variant="subhead" style={styles.muted}>Trace가 기록하는 방식을 관리하세요.</ThemedText>
@@ -117,8 +117,8 @@ export default function SettingsScreen() {
         <SectionTitle title="개인정보 보호" />
         <SettingsGroup rows={privacyRows} />
 
-        <PressableScale onPress={() => router.push('/premium')} style={styles.plusCard}>
-          <View style={styles.plusCopy}><ThemedText variant="headline" style={styles.white}>Trace Plus</ThemedText><ThemedText variant="caption" style={styles.muted}>더 많은 기록과 안전한 보관을 만나보세요.</ThemedText></View>
+        <PressableScale onPress={() => router.push('/premium')} style={[styles.plusCard, { backgroundColor: colors.lavender, borderColor: colors.traceLavender }]}>
+          <View style={styles.plusCopy}><ThemedText variant="headline" style={styles.white}>Trace Premium</ThemedText><ThemedText variant="caption" style={styles.muted}>더 많은 기록과 안전한 보관을 만나보세요.</ThemedText></View>
           <Ionicons name="sparkles" size={20} color={colors.aiAccent} />
         </PressableScale>
 
@@ -155,35 +155,36 @@ function SectionTitle({ title }: { title: string }) {
 }
 
 function SettingRowHeader({ icon, title, description, children }: { icon: keyof typeof Ionicons.glyphMap; title: string; description: string; children: React.ReactNode }) {
-  return <View style={styles.settingRow}><View style={styles.leading}><View style={styles.rowIcon}><Ionicons name={icon} size={19} color="#E8E6E0" /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{title}</ThemedText><ThemedText variant="caption" style={styles.muted}>{description}</ThemedText></View></View>{children}</View>;
+  const { colors } = useTraceTheme();
+  return <View style={styles.settingRow}><View style={styles.leading}><View style={styles.rowIcon}><Ionicons name={icon} size={19} color={colors.text} /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{title}</ThemedText><ThemedText variant="caption" style={styles.muted}>{description}</ThemedText></View></View>{children}</View>;
 }
 
 function SettingsGroup({ rows }: { rows: readonly { label: string; description: string; icon: keyof typeof Ionicons.glyphMap; value: boolean; set: (value: boolean) => void }[] }) {
   const { colors } = useTraceTheme();
-  return <View style={styles.group}>{rows.map((row, index) => <View key={row.label} style={[styles.settingRow, index < rows.length - 1 && styles.rowBorder]}><View style={styles.leading}><View style={styles.rowIcon}><Ionicons name={row.icon} size={19} color="#E8E6E0" /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{row.label}</ThemedText><ThemedText variant="caption" style={styles.muted}>{row.description}</ThemedText></View></View><SettingSwitch label={row.label} color={colors.traceLavender} value={row.value} onValueChange={row.set} /></View>)}</View>;
+  return <View style={styles.group}>{rows.map((row, index) => <View key={row.label} style={[styles.settingRow, index < rows.length - 1 && styles.rowBorder]}><View style={styles.leading}><View style={styles.rowIcon}><Ionicons name={row.icon} size={19} color={colors.text} /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{row.label}</ThemedText><ThemedText variant="caption" style={styles.muted}>{row.description}</ThemedText></View></View><SettingSwitch label={row.label} color={colors.traceLavender} value={row.value} onValueChange={row.set} /></View>)}</View>;
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#10131A' },
+  screen: { flex: 1, backgroundColor: '#F8F6F2' },
   content: { flexGrow: 1, padding: spacing.ml, paddingBottom: spacing.xxxl, gap: spacing.md },
   header: { gap: spacing.xxs, paddingBottom: spacing.sm },
-  white: { color: '#F8F7F3' },
-  muted: { color: '#969AA4' },
-  locationCard: { borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, gap: spacing.sm, backgroundColor: '#181C25' },
-  group: { borderRadius: radius.card, borderCurve: 'continuous', paddingHorizontal: spacing.md, overflow: 'hidden', backgroundColor: '#181C25' },
+  white: { color: '#1D1A17' },
+  muted: { color: '#756F69' },
+  locationCard: { borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, gap: spacing.sm, borderWidth: StyleSheet.hairlineWidth },
+  group: { borderRadius: radius.card, borderCurve: 'continuous', paddingHorizontal: spacing.md, overflow: 'hidden', backgroundColor: '#FFFFFF', borderWidth: StyleSheet.hairlineWidth, borderColor: '#E8E2DB' },
   settingRow: { minHeight: 70, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm },
   leading: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  rowIcon: { width: 36, height: 36, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', backgroundColor: '#232833' },
+  rowIcon: { width: 36, height: 36, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F0EEEA' },
   rowCopy: { flex: 1, gap: 2 },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: '#303541' },
-  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#303541' },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: '#E8E2DB' },
+  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#E8E2DB' },
   permissionRow: { minHeight: 32, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  permissionButton: { minHeight: 42, borderRadius: radius.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, backgroundColor: '#262B36' },
+  permissionButton: { minHeight: 42, borderRadius: radius.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, backgroundColor: '#F0EEEA' },
   systemTheme: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: spacing.xs, alignSelf: 'flex-start' },
-  plusCard: { minHeight: 86, flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, backgroundColor: '#24213B', borderWidth: StyleSheet.hairlineWidth, borderColor: '#4A426D' },
+  plusCard: { minHeight: 86, flexDirection: 'row', alignItems: 'center', gap: spacing.md, borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, borderWidth: StyleSheet.hairlineWidth },
   plusCopy: { flex: 1, gap: spacing.xxs },
   infoRow: { minHeight: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  logout: { minHeight: 54, borderRadius: radius.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, backgroundColor: '#181C25' },
+  logout: { minHeight: 54, borderRadius: radius.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs, backgroundColor: '#FFFFFF', borderWidth: StyleSheet.hairlineWidth, borderColor: '#E8E2DB' },
   modalScrim: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.ml, backgroundColor: 'rgba(0,0,0,0.58)' },
   modalCard: { width: '100%', maxWidth: 420, borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.ml, gap: spacing.lg, backgroundColor: '#FBF7F0', boxShadow: shadow.raised },
   modalCopy: { gap: spacing.xs },
