@@ -93,7 +93,7 @@ export default function SettingsScreen() {
         </View>
 
         <SectionTitle title="기록" />
-        <View style={[styles.locationCard, { boxShadow: shadow.raised }]}>
+        <View style={[styles.locationCard, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.soft }]}>
           <SettingRowHeader icon="navigate-outline" title="위치 기록" description={isTracking ? '자동 기록 중' : '위치 기록 꺼짐'}>
             {locationPending === 'tracking' ? <ActivityIndicator color={colors.aiAccent} /> : <SettingSwitch label="위치 기록" color={colors.traceLavender} value={isTracking} onValueChange={(value) => void toggleTracking(value)} />}
           </SettingRowHeader>
@@ -105,7 +105,7 @@ export default function SettingsScreen() {
           {locationError ? <ThemedText variant="caption" style={{ color: '#E99A86' }}>{locationError}</ThemedText> : null}
           {permissionStatus === 'denied' || permissionStatus === 'restricted' ? (
             <PressableScale onPress={() => void openLocationSettings()} style={styles.permissionButton}>
-              <ThemedText variant="caption" style={styles.white}>시스템 설정 열기</ThemedText><Ionicons name="open-outline" size={15} color="#F8F7F3" />
+              <ThemedText variant="caption" style={styles.white}>시스템 설정 열기</ThemedText><Ionicons name="open-outline" size={15} color={colors.text} />
             </PressableScale>
           ) : null}
         </View>
@@ -156,20 +156,20 @@ function SectionTitle({ title }: { title: string }) {
 
 function SettingRowHeader({ icon, title, description, children }: { icon: keyof typeof Ionicons.glyphMap; title: string; description: string; children: React.ReactNode }) {
   const { colors } = useTraceTheme();
-  return <View style={styles.settingRow}><View style={styles.leading}><View style={styles.rowIcon}><Ionicons name={icon} size={19} color={colors.text} /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{title}</ThemedText><ThemedText variant="caption" style={styles.muted}>{description}</ThemedText></View></View>{children}</View>;
+  return <View style={styles.settingRow}><View style={styles.leading}><View style={[styles.rowIcon, { backgroundColor: colors.surfaceMuted }]}><Ionicons name={icon} size={19} color={colors.text} /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{title}</ThemedText><ThemedText variant="caption" style={styles.muted}>{description}</ThemedText></View></View>{children}</View>;
 }
 
 function SettingsGroup({ rows }: { rows: readonly { label: string; description: string; icon: keyof typeof Ionicons.glyphMap; value: boolean; set: (value: boolean) => void }[] }) {
   const { colors } = useTraceTheme();
-  return <View style={styles.group}>{rows.map((row, index) => <View key={row.label} style={[styles.settingRow, index < rows.length - 1 && styles.rowBorder]}><View style={styles.leading}><View style={styles.rowIcon}><Ionicons name={row.icon} size={19} color={colors.text} /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{row.label}</ThemedText><ThemedText variant="caption" style={styles.muted}>{row.description}</ThemedText></View></View><SettingSwitch label={row.label} color={colors.traceLavender} value={row.value} onValueChange={row.set} /></View>)}</View>;
+  return <View style={[styles.group, { backgroundColor: colors.surface, borderColor: colors.border }]}>{rows.map((row, index) => <View key={row.label} style={[styles.settingRow, index < rows.length - 1 && styles.rowBorder]}><View style={styles.leading}><View style={[styles.rowIcon, { backgroundColor: colors.surfaceMuted }]}><Ionicons name={row.icon} size={19} color={colors.text} /></View><View style={styles.rowCopy}><ThemedText variant="body" style={styles.white}>{row.label}</ThemedText><ThemedText variant="caption" style={styles.muted}>{row.description}</ThemedText></View></View><SettingSwitch label={row.label} color={colors.traceLavender} value={row.value} onValueChange={row.set} /></View>)}</View>;
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F8F6F2' },
   content: { flexGrow: 1, padding: spacing.ml, paddingBottom: spacing.xxxl, gap: spacing.md },
   header: { gap: spacing.xxs, paddingBottom: spacing.sm },
-  white: { color: '#1D1A17' },
-  muted: { color: '#756F69' },
+  white: {},
+  muted: {},
   locationCard: { borderRadius: radius.card, borderCurve: 'continuous', padding: spacing.md, gap: spacing.sm, borderWidth: StyleSheet.hairlineWidth },
   group: { borderRadius: radius.card, borderCurve: 'continuous', paddingHorizontal: spacing.md, overflow: 'hidden', backgroundColor: '#FFFFFF', borderWidth: StyleSheet.hairlineWidth, borderColor: '#E8E2DB' },
   settingRow: { minHeight: 70, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm },
