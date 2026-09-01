@@ -51,7 +51,7 @@
         {
           "backgroundColor": "#FAF9FF",
           "image": "./assets/images/trace-logo.png",
-          "imageWidth": 76
+          "imageWidth": 148
         }
       ],
       "expo-secure-store"

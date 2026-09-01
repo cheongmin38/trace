@@ -3,16 +3,16 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useReducedMotion } from 'react-native-reanimated';
-import { ThemedText } from '@/components/themed-text';
 import { BrandLogo } from '@/components/brand-logo';
-import { useAuthStore } from '@/store/auth-store';
+import { ThemedText } from '@/components/themed-text';
 import { restoreLocationTracking } from '@/services/location-service';
 import { synchronizePersistedLocationData } from '@/services/location-pipeline';
+import { useAuthStore } from '@/store/auth-store';
 import { useLocationStore } from '@/store/location-store';
-import { spacing, useTraceTheme } from '@/theme';
+import { shadow, spacing, useTraceTheme } from '@/theme';
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -27,19 +27,46 @@ export default function RootLayout() {
 
   useEffect(() => { void restoreSession(); }, [restoreSession]);
   useEffect(() => { void restoreLocationTracking(); }, []);
-  useEffect(() => { if (authInitialized && isAuthenticated) void synchronizePersistedLocationData(); }, [authInitialized, isAuthenticated]);
-  useEffect(() => { if (authInitialized && locationInitialized) void SplashScreen.hideAsync(); }, [authInitialized, locationInitialized]);
+  useEffect(() => {
+    if (authInitialized && isAuthenticated) void synchronizePersistedLocationData();
+  }, [authInitialized, isAuthenticated]);
+  useEffect(() => {
+    if (authInitialized && locationInitialized) void SplashScreen.hideAsync();
+  }, [authInitialized, locationInitialized]);
 
   if (!authInitialized || !locationInitialized) {
-    return <GestureHandlerRootView style={[styles.root, styles.splash, { backgroundColor: colors.background }]}><BrandLogo size={112} /><ThemedText variant="caption">당신의 순간을 조용히 불러오고 있어요</ThemedText></GestureHandlerRootView>;
+    return (
+      <GestureHandlerRootView style={[styles.root, styles.splash]}>
+        <StatusBar style="dark" />
+        <View pointerEvents="none" style={[styles.splashOrb, styles.splashOrbTop]} />
+        <View pointerEvents="none" style={[styles.splashOrb, styles.splashOrbBottom]} />
+        <View pointerEvents="none" style={styles.splashGlow} />
+        <View style={styles.splashContent}>
+          <BrandLogo size={148} style={styles.splashLogo} />
+          <ThemedText variant="screenTitle" style={styles.splashBrand}>Trace</ThemedText>
+          <ThemedText variant="subhead" style={styles.splashCopy}>
+            당신의 하루가 모여{`\n`}특별한 추억이 됩니다
+          </ThemedText>
+        </View>
+      </GestureHandlerRootView>
+    );
   }
 
   const canEnterApp = isAuthenticated && onboardingCompleted;
+
   return (
     <GestureHandlerRootView style={[styles.root, process.env.EXPO_OS === 'web' && styles.webRoot]}>
       <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
         <StatusBar style={isDark ? 'light' : 'dark'} />
-        <Stack screenOptions={{ headerShown: false, headerShadowVisible: false, headerBackButtonDisplayMode: 'minimal', headerStyle: { backgroundColor: colors.background }, contentStyle: { backgroundColor: colors.background }, animation: reducedMotion ? 'fade' : 'default' }}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            headerShadowVisible: false,
+            headerBackButtonDisplayMode: 'minimal',
+            headerStyle: { backgroundColor: colors.background },
+            contentStyle: { backgroundColor: colors.background },
+            animation: reducedMotion ? 'fade' : 'default',
+          }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="auth" options={{ headerShown: false }} />
           <Stack.Screen name="email-login" options={{ title: '이메일 로그인' }} />
@@ -71,6 +98,57 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  splash: { alignItems: 'center', justifyContent: 'center', gap: spacing.xs },
-  webRoot: { width: '100%', maxWidth: 480, alignSelf: 'center', boxShadow: '0 0 48px rgba(0,0,0,0.08)' },
+  splash: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FAF9FF',
+    overflow: 'hidden',
+  },
+  splashContent: {
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.xl,
+    transform: [{ translateY: -14 }],
+    zIndex: 1,
+  },
+  splashLogo: {
+    borderRadius: 42,
+    boxShadow: shadow.card,
+  },
+  splashBrand: {
+    color: '#201B35',
+    fontFamily: 'serif',
+    fontSize: 34,
+    lineHeight: 40,
+    letterSpacing: -1.2,
+    marginTop: spacing.xs,
+  },
+  splashCopy: {
+    color: '#686278',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  splashGlow: {
+    position: 'absolute',
+    width: 336,
+    height: 336,
+    borderRadius: 999,
+    backgroundColor: 'rgba(224, 214, 255, 0.40)',
+    top: '26%',
+    boxShadow: '0 0 64px 22px rgba(230, 220, 255, 0.50)',
+  },
+  splashOrb: {
+    position: 'absolute',
+    borderRadius: 999,
+    backgroundColor: 'rgba(201, 188, 255, 0.34)',
+    boxShadow: '0 12px 34px rgba(150, 125, 238, 0.14)',
+  },
+  splashOrbTop: { width: 74, height: 74, top: '14%', right: -12 },
+  splashOrbBottom: { width: 108, height: 108, bottom: '15%', left: -28 },
+  webRoot: {
+    width: '100%',
+    maxWidth: 480,
+    alignSelf: 'center',
+    boxShadow: '0 0 48px rgba(0,0,0,0.08)',
+  },
 });
