@@ -11,15 +11,16 @@ export function StatCard({ value, label, icon }: { value: number; label: string;
   const { colors } = useTraceTheme();
   return (
     <View style={[styles.root, { backgroundColor: colors.surfaceGlass, borderColor: colors.border, boxShadow: shadow.soft }]}> 
-      {icon ? <View style={[styles.iconBubble, { backgroundColor: colors.accentSoft }]}><Ionicons name={icon} size={14} color={colors.accent} /></View> : null}
-      <CountUpText value={value} style={[styles.number, { color: colors.text }]} />
-      <ThemedText variant="caption" numberOfLines={1}>{label}</ThemedText>
+      <View style={styles.topLine}>{icon ? <View style={[styles.iconBubble, { backgroundColor: colors.accentSoft }]}><Ionicons name={icon} size={14} color={colors.accent} /></View> : <View />}</View>
+      <View style={styles.copy}><ThemedText variant="caption" numberOfLines={1} style={{ color: colors.secondaryText }}>{label}</ThemedText><CountUpText value={value} style={[styles.number, { color: colors.text }]} /></View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, minHeight: 94, padding: spacing.md, justifyContent: 'space-between', gap: spacing.xxs, borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden', position: 'relative' },
-  iconBubble: { position: 'absolute', right: spacing.sm, top: spacing.sm, width: 28, height: 28, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center' },
-  number: { fontSize: 27, lineHeight: 32, fontVariant: ['tabular-nums'], letterSpacing: -0.6 },
+  root: { flex: 1, minHeight: 88, padding: spacing.sm, justifyContent: 'space-between', gap: spacing.xxs, borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden' },
+  topLine: { minHeight: 28, flexDirection: 'row', justifyContent: 'space-between' },
+  iconBubble: { width: 28, height: 28, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center' },
+  copy: { gap: 1 },
+  number: { fontSize: 21, lineHeight: 25, fontVariant: ['tabular-nums'], letterSpacing: -0.45 },
 });
