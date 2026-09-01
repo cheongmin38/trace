@@ -101,10 +101,10 @@ export function MapScreen() {
       <View style={[styles.modeSwitch, { backgroundColor: colors.surfaceMuted }]}>
         {([['memory', '기억'], ['exploration', '탐험']] as const).map(([key, label]) => <PressableScale key={key} onPress={() => setMapMode(key)} style={[styles.modeItem, mapMode === key && { backgroundColor: colors.surface }]}><ThemedText variant="caption" style={{ color: mapMode === key ? colors.text : colors.secondaryText }}>{label}</ThemedText></PressableScale>)}
       </View>
-      <View style={styles.filters}>{[['all','전체'],['frequent','자주 간 곳'],['travel','여행']].map(([key,label])=><PressableScale key={key} onPress={()=>setFilter(key as typeof filter)} style={[styles.filter,{backgroundColor:filter===key?colors.text:colors.surfaceMuted}]}><ThemedText variant="caption" style={{color:filter===key?colors.onAccent:colors.secondaryText}}>{label}</ThemedText></PressableScale>)}</View>
+      <View style={styles.filters}>{[['all','전체'],['frequent','자주 간 곳'],['travel','여행']].map(([key,label])=><PressableScale key={key} onPress={()=>setFilter(key as typeof filter)} style={[styles.filter,{backgroundColor:filter===key?colors.accent:colors.surfaceGlass, borderColor: colors.border}]}><ThemedText variant="caption" style={{color:filter===key?colors.onAccent:colors.secondaryText}}>{label}</ThemedText></PressableScale>)}</View>
 
 
-      <View style={[styles.mapCard, { backgroundColor: colors.surface, boxShadow: shadow.card, height: Math.max(420, Math.min(680, height * 0.64)) }]}>
+      <View style={[styles.mapCard, { backgroundColor: colors.surfaceGlass, borderColor: colors.border, boxShadow: shadow.card, height: Math.max(420, Math.min(680, height * 0.64)) }]}>
         <CrossPlatformMap pins={visiblePins} selectedId={selectedPlaceId ?? undefined} onSelect={selectPin} fitKey={fitKey} currentLocation={currentLocation} routePoints={routePoints} exploration={mapMode === 'exploration'} />
         <View style={styles.mapControls}>
           <IconButton name="locate" label="현재 위치" onPress={() => void locate()} filled />
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, paddingBottom: 124, gap: spacing.lg },
   header: { paddingHorizontal: spacing.ml, paddingTop: spacing.lg },
   discovery: { paddingHorizontal: spacing.ml },
-  mapCard: { marginHorizontal: spacing.ml, borderRadius: radius.lg, borderCurve: 'continuous', overflow: 'hidden', position: 'relative' },
+  mapCard: { marginHorizontal: spacing.ml, borderRadius: radius.lg, borderCurve: 'continuous', overflow: 'hidden', position: 'relative', borderWidth: StyleSheet.hairlineWidth },
   mapControls: { position: 'absolute', top: spacing.sm, right: spacing.sm, gap: spacing.xs },
   locationError: { paddingHorizontal: spacing.ml, marginTop: -spacing.sm },
   sectionHeader: { paddingHorizontal: spacing.ml, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: spacing.md },
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   recentTitle: { fontSize: 16, lineHeight: 21 },
   searchButton: { marginHorizontal: spacing.ml, minHeight: 48, borderRadius: radius.md, paddingHorizontal: spacing.md, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   filters: { paddingHorizontal: spacing.ml, flexDirection: 'row', gap: spacing.xs },
-  filter: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: radius.full },
+  filter: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: radius.full, borderWidth: StyleSheet.hairlineWidth },
   modeSwitch: { marginHorizontal: spacing.ml, padding: 4, borderRadius: radius.md, flexDirection: 'row', alignSelf: 'flex-start', gap: 2 },
   modeItem: { paddingHorizontal: spacing.lg, paddingVertical: spacing.xs, borderRadius: radius.sm },
   explorationCard: { marginHorizontal: spacing.ml, padding: spacing.ml, borderRadius: radius.card, gap: spacing.md },
