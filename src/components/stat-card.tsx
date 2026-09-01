@@ -1,12 +1,12 @@
 import { StyleSheet, View } from 'react-native';
 import { CountUpText } from '@/components/count-up-text';
 import { ThemedText } from '@/components/themed-text';
-import { radius, spacing, useTraceTheme } from '@/theme';
+import { radius, shadow, spacing, useTraceTheme } from '@/theme';
 
 export function StatCard({ value, label }: { value: number; label: string }) {
   const { colors } = useTraceTheme();
   return (
-    <View style={[styles.root, { backgroundColor: colors.surface, borderColor: colors.border }]}> 
+    <View style={[styles.root, { backgroundColor: colors.surfaceGlass, borderColor: colors.border, boxShadow: shadow.soft }]}> 
       <CountUpText value={value} style={[styles.number, { color: colors.text }]} />
       <ThemedText variant="caption" numberOfLines={1}>{label}</ThemedText>
     </View>

@@ -50,7 +50,7 @@ export function BottomTabBar() {
         tabBarInactiveTintColor: colors.tertiaryText,
         tabBarLabelStyle: typography.tabLabel,
         tabBarItemStyle: styles.item,
-        tabBarStyle: [styles.bar, { borderColor: colors.border, boxShadow: shadow.raised }],
+        tabBarStyle: [styles.bar, { borderColor: colors.border, backgroundColor: colors.surfaceGlass, boxShadow: shadow.raised }],
         tabBarBackground: () => <BlurView intensity={84} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />,
       }}
     >
