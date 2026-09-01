@@ -68,9 +68,9 @@ export function ProfileScreen() {
       <View style={[styles.stats, { backgroundColor: colors.surface, borderColor: colors.border, boxShadow: shadow.card }]}>
         <View pointerEvents="none" style={[styles.surfaceSheen, { backgroundColor: isDark ? 'rgba(255,255,255,0.035)' : 'rgba(255,255,255,0.58)' }]} />
         <ProfileStat value={userStats.placeCount} label="기록한 장소" colors={colors} />
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <ProfileStat value={userStats.photoCount} label="기록한 사진" colors={colors} />
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <ProfileStat value={userStats.visitCount} label="방문 기록" colors={colors} />
       </View>
 
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   stats: { minHeight: 92, flexDirection: 'row', alignItems: 'center', borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.sm, overflow: 'hidden', position: 'relative' },
   stat: { flex: 1, alignItems: 'center', gap: 3 },
   statValue: { color: '#F8F7F3', fontVariant: ['tabular-nums'] },
-  divider: { width: StyleSheet.hairlineWidth, height: 38, backgroundColor: '#303541' },
+  divider: { width: StyleSheet.hairlineWidth, height: 38 },
   section: { gap: spacing.sm },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   topPlaces: { borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: spacing.md, paddingVertical: spacing.xs, overflow: 'hidden', position: 'relative' },

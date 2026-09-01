@@ -11,13 +11,13 @@ const icons = {
   home: ['home-outline', 'home'],
   map: ['map-outline', 'map'],
   timeline: ['time-outline', 'time'],
-  ask: ['add', 'add'],
+  ask: ['sparkles-outline', 'sparkles'],
   profile: ['person-outline', 'person'],
 } as const;
 
 const labels = { home: '홈', map: '지도', timeline: '타임라인', ask: 'Ask', profile: '프로필' } as const;
 
-function TabIcon({ name, focused, color, accent }: { name: keyof typeof icons; focused: boolean; color: ColorValue; accent: ColorValue }) {
+function TabIcon({ name, focused, color }: { name: keyof typeof icons; focused: boolean; color: ColorValue }) {
   const scale = useSharedValue(focused ? 1.04 : 1);
 
   useEffect(() => {
@@ -25,10 +25,6 @@ function TabIcon({ name, focused, color, accent }: { name: keyof typeof icons; f
   }, [focused, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
-
-  if (name === 'ask') {
-    return <View style={[styles.createButton, { backgroundColor: accent, boxShadow: shadow.card }]}><Ionicons name="add" size={25} color="#FFFFFF" /></View>;
-  }
 
   return (
     <View style={styles.iconSlot}>
@@ -64,7 +60,7 @@ export function BottomTabBar() {
           name={name}
           options={{
             title: labels[name],
-            tabBarIcon: ({ focused, color }) => <TabIcon name={name} focused={focused} color={color} accent={colors.accent} />,
+            tabBarIcon: ({ focused, color }) => <TabIcon name={name} focused={focused} color={color} />,
           }}
         />
       ))}
@@ -89,7 +85,6 @@ const styles = StyleSheet.create({
   },
   item: { paddingVertical: 3 },
   iconSlot: { height: 32, minWidth: 44, alignItems: 'center', justifyContent: 'center', gap: 2, position: 'relative' },
-  createButton: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center', marginTop: -20, borderWidth: 4, borderColor: 'rgba(255,255,255,0.82)' },
   activePill: { position: 'absolute', width: 42, height: 30, borderRadius: 15 },
   activeDot: { width: 3, height: 3, borderRadius: 999 },
 });

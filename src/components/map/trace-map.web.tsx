@@ -30,6 +30,9 @@ export function TraceMap({ pins, selectedId, onSelect, fitKey = 0, currentLocati
   useEffect(() => {
     if (!element.current || !mapStyle) return;
     const instance = new maplibregl.Map({ container: element.current, style: mapStyle, center: KOREA, zoom: 6.3, minZoom: 5, maxZoom: 18, attributionControl: {} });
+    const syncMapSize = () => instance.resize();
+    const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(syncMapSize);
+    resizeObserver?.observe(element.current);
     const onError = (event: maplibregl.ErrorEvent) => {
       console.error('Trace web map error', event.error);
       setMapError('지도를 불러오지 못했어요. MapTiler 키와 도메인 설정을 확인해주세요.');
@@ -43,13 +46,16 @@ export function TraceMap({ pins, selectedId, onSelect, fitKey = 0, currentLocati
       instance.addLayer({ id: 'clusters', type: 'circle', source: 'trace-places', filter: ['has', 'point_count'], paint: { 'circle-color': '#171717', 'circle-radius': ['step', ['get', 'point_count'], 20, 20, 25, 80, 31], 'circle-stroke-color': '#F7F3EA', 'circle-stroke-width': 2 } });
       instance.addLayer({ id: 'cluster-count', type: 'symbol', source: 'trace-places', filter: ['has', 'point_count'], layout: { 'text-field': '{point_count_abbreviated}', 'text-size': 12 }, paint: { 'text-color': '#FFFFFF' } });
       instance.addLayer({ id: 'trace-point', type: 'circle', source: 'trace-places', filter: ['!', ['has', 'point_count']], paint: { 'circle-color': '#F7F3EA', 'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, 5, 10, 8, 14, 14], 'circle-stroke-color': '#171717', 'circle-stroke-width': 2 } });
+      const places = instance.getSource('trace-places') as maplibregl.GeoJSONSource;
+      places.setData({ type: 'FeatureCollection', features: pinsRef.current.map((pin) => ({ type: 'Feature', properties: { placeId: pin.placeId, title: pin.title, visitCount: pin.visitCount }, geometry: { type: 'Point', coordinates: [pin.longitude, pin.latitude] } })) });
       instance.on('click', 'clusters', (event: maplibregl.MapMouseEvent) => { const feature = instance.queryRenderedFeatures(event.point, { layers: ['clusters'] })[0]; const clusterId = feature?.properties?.cluster_id; const source = instance.getSource('trace-places') as maplibregl.GeoJSONSource; if (typeof clusterId === 'number') source.getClusterExpansionZoom(clusterId).then((zoom: number) => instance.easeTo({ center: (feature.geometry as GeoJSON.Point).coordinates as [number, number], zoom })); });
       instance.on('click', 'trace-point', (event: maplibregl.MapLayerMouseEvent) => { const id = event.features?.[0]?.properties?.placeId; const pin = pinsRef.current.find((item) => item.placeId === id); if (pin) onSelect(pin); });
       instance.on('mouseenter', 'clusters', () => { instance.getCanvas().style.cursor = 'pointer'; });
       instance.on('mouseleave', 'clusters', () => { instance.getCanvas().style.cursor = ''; });
     });
     map.current = instance;
-    return () => { instance.off('error', onError); instance.remove(); map.current = null; };
+    const resizeTimer = setTimeout(syncMapSize, 80);
+    return () => { clearTimeout(resizeTimer); resizeObserver?.disconnect(); instance.off('error', onError); instance.remove(); map.current = null; };
   }, [onSelect]);
 
   useEffect(() => { const source = map.current?.getSource('trace-places') as maplibregl.GeoJSONSource | undefined; if (!source) return; source.setData({ type: 'FeatureCollection', features: pins.map((pin) => ({ type: 'Feature', properties: { placeId: pin.placeId, title: pin.title, visitCount: pin.visitCount }, geometry: { type: 'Point', coordinates: [pin.longitude, pin.latitude] } })) }); }, [pins]);
@@ -58,7 +64,7 @@ export function TraceMap({ pins, selectedId, onSelect, fitKey = 0, currentLocati
   useEffect(() => { if (!fitKey || !map.current || !pins.length) return; const bounds = new maplibregl.LngLatBounds(); pins.forEach((pin) => bounds.extend([pin.longitude, pin.latitude])); map.current.fitBounds(bounds, { padding: 64, maxZoom: 13, duration: 520 }); }, [fitKey, pins]);
   useEffect(() => { if (currentLocation) map.current?.easeTo({ center: [currentLocation.longitude, currentLocation.latitude], zoom: 14, duration: 460 }); }, [currentLocation]);
   if (!mapStyle) return <View style={styles.missing}><ThemedText variant="headline">웹 지도 키가 필요해요</ThemedText><ThemedText variant="caption">EXPO_PUBLIC_MAPTILER_KEY를 Vercel Production 환경변수에 설정해주세요.</ThemedText></View>;
-  return <View style={styles.root as never} nativeID="trace-web-map"><div ref={element} style={{ width: '100%', height: '100%' }} />{mapError ? <View style={styles.error}><ThemedText variant="headline">지도를 불러오지 못했어요</ThemedText><ThemedText variant="caption">{mapError}</ThemedText></View> : null}</View>;
+  return <View style={styles.root as never} nativeID="trace-web-map"><div ref={element} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />{mapError ? <View style={styles.error}><ThemedText variant="headline">지도를 불러오지 못했어요</ThemedText><ThemedText variant="caption">{mapError}</ThemedText></View> : null}</View>;
 }
 
-const styles = StyleSheet.create({ root: { flex: 1, position: 'relative' }, missing: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 8 }, error: { position: 'absolute', left: 16, right: 16, top: 16, padding: 16, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.94)', gap: 6 } });
+const styles = StyleSheet.create({ root: { flex: 1, position: 'relative', overflow: 'hidden' }, missing: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 8 }, error: { position: 'absolute', left: 16, right: 16, top: 16, padding: 16, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.94)', gap: 6 } });
