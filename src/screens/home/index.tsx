@@ -26,11 +26,13 @@ export function HomeScreen() {
   const dayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
   const todayVisits = useMemo(() => visits.filter((visit) => visit.startedAt.slice(0, 10) === dayKey), [dayKey, visits]);
   const todayMemories = useMemo(() => memories.filter((memory) => memory.startedAt.slice(0, 10) === dayKey), [dayKey, memories]);
-  const photoCount = todayMemories.reduce((total, memory) => total + memory.photos.length, 0);
+  const todayPlaceCount = new Set(todayVisits.map((visit) => visit.placeId)).size;
+  const photoCount = new Set(todayMemories.flatMap((memory) => memory.photos.map((photo) => photo.id))).size;
   const duration = todayVisits.reduce((total, visit) => total + (visit.durationMinutes ?? 0), 0);
   const monthly = getMonthlyReview(places, visits, memories, today.getFullYear(), today.getMonth() + 1);
+  const hasMonthlyData = monthly.placeCount > 0 || monthly.memoryCount > 0 || monthly.photoCount > 0;
   const recent = [...memories].sort((a, b) => +new Date(b.startedAt) - +new Date(a.startedAt)).slice(0, 5);
-  const cardWidth = Math.max(108, Math.min(128, (width - spacing.ml * 2 - spacing.xs * 2) / 3));
+  const cardWidth = Math.min(184, Math.max(148, (width - spacing.ml * 2) * 0.4));
   const yearAgoTarget = new Date(today);
   yearAgoTarget.setFullYear(yearAgoTarget.getFullYear() - 1);
   const yearAgo = memories.find((memory) => new Date(memory.startedAt).toDateString() === yearAgoTarget.toDateString());
@@ -49,7 +51,7 @@ export function HomeScreen() {
 
       {loading ? <SkeletonCard /> : <>
         <View style={styles.stats}>
-          <StatCard value={todayVisits.length} label="방문 장소" icon="location" />
+          <StatCard value={todayPlaceCount} label="방문 장소" icon="location" />
           <StatCard value={photoCount} label="찍은 사진" icon="camera" />
           <StatCard value={duration} label="머문 시간" icon="time" />
         </View>
@@ -83,7 +85,7 @@ export function HomeScreen() {
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}><View><ThemedText variant="headline">이번 달 Trace</ThemedText><ThemedText variant="caption">{today.getMonth() + 1}월에 남긴 발자취</ThemedText></View><PressableScale onPress={() => router.push({ pathname: '/review/[year]', params: { year: String(today.getFullYear()) } })}><ThemedText variant="caption" style={{ color: colors.accent }}>돌아보기</ThemedText></PressableScale></View>
-        <View style={styles.stats}><StatCard value={monthly.placeCount} label="장소" icon="location" /><StatCard value={monthly.memoryCount} label="기억" icon="sparkles" /><StatCard value={monthly.photoCount} label="사진" icon="images" /></View>
+        {hasMonthlyData ? <View style={styles.stats}><StatCard value={monthly.placeCount} label="장소" icon="location" /><StatCard value={monthly.memoryCount} label="기억" icon="sparkles" /><StatCard value={monthly.photoCount} label="사진" icon="images" /></View> : <View style={[styles.monthlyEmpty, { backgroundColor: colors.surfaceGlass, borderColor: colors.border }]}><ThemedText variant="subhead">{today.getMonth() + 1}월의 Trace</ThemedText><ThemedText variant="caption" style={{ color: colors.secondaryText }}>아직 이번 달 기록이 없어요.</ThemedText></View>}
       </View>
     </ScrollView>
   );
@@ -91,7 +93,7 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   content: { paddingHorizontal: spacing.ml, paddingTop: spacing.sm, paddingBottom: 124, gap: spacing.lg, overflow: 'hidden' },
-  ambientTop: { width: 220, height: 220, borderRadius: radius.full, position: 'absolute', top: -118, right: -104, opacity: 0.48 },
+  ambientTop: { width: 220, height: 220, borderRadius: radius.full, position: 'absolute', top: -118, right: -104, opacity: 0.34 },
   header: { minHeight: 68, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.md },
   headerCopy: { gap: spacing.xxs },
   headerTitle: { flexDirection: 'row', alignItems: 'center', gap: spacing.xxs },
@@ -100,11 +102,12 @@ const styles = StyleSheet.create({
   sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
   memoryRow: { gap: spacing.xs, paddingRight: spacing.ml },
   memoryCard: { borderRadius: radius.md, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden' },
-  memoryPhoto: { width: '100%', aspectRatio: 0.94 },
+  memoryPhoto: { width: '100%', aspectRatio: 1.28 },
   memoryCopy: { padding: spacing.xs, gap: 1 },
   memoryName: { fontWeight: '700' },
   yearCard: { minHeight: 86, borderRadius: radius.card, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, padding: spacing.sm, alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   yearIcon: { width: 38, height: 38, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   yearCopy: { flex: 1, gap: spacing.xxs },
   yearPhoto: { width: 62, height: 62, borderRadius: radius.sm },
+  monthlyEmpty: { minHeight: 64, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, justifyContent: 'center', paddingHorizontal: spacing.md },
 });

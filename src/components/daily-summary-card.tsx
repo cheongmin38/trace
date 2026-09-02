@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import type { ComponentProps } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { generateDailySummary } from '@/services/daily-summary-service';
@@ -13,27 +13,34 @@ export function DailySummaryCard({ date = new Date().toISOString().slice(0, 10),
   const places = useAppStore((state) => state.places);
   const memories = useAppStore((state) => state.memories);
   const [text, setText] = useState('');
+  const dayVisits = useMemo(() => visits.filter((visit) => visit.startedAt.slice(0, 10) === date), [date, visits]);
+  const dayPhotos = useMemo(() => new Set(memories.filter((memory) => memory.startedAt.slice(0, 10) === date).flatMap((memory) => memory.photos.map((photo) => photo.id))).size, [date, memories]);
 
   useEffect(() => {
     let active = true;
-    const dayVisits = visits.filter((visit) => visit.startedAt.slice(0, 10) === date);
-    void generateDailySummary({
-      sourceDate: date,
-      visits: dayVisits,
-      places,
-      photoCount: memories.filter((memory) => memory.startedAt.slice(0, 10) === date).reduce((total, memory) => total + memory.photos.length, 0),
-    }).then((result) => { if (active) setText(result.summary); });
+    if (dayVisits.length === 0) {
+      return () => { active = false; };
+    }
+    void generateDailySummary({ sourceDate: date, visits: dayVisits, places, photoCount: dayPhotos }).then((result) => {
+      if (active) setText(result.summary);
+    }).catch((error) => {
+      console.error('[Trace] Daily summary failed', error);
+    });
     return () => { active = false; };
-  }, [date, memories, places, visits]);
+  }, [date, dayPhotos, dayVisits, places]);
 
+  const empty = dayVisits.length === 0;
   return <View style={[styles.card, { backgroundColor: colors.surfaceGlass, borderColor: colors.border, boxShadow: shadow.soft }, style]}>
     <View pointerEvents="none" style={[styles.glow, { backgroundColor: colors.accentSoft }]} />
     <View style={styles.titleLine}>
       <View style={[styles.icon, { backgroundColor: colors.accentSoft }]}><Ionicons name="sparkles" size={14} color={colors.accent} /></View>
       <ThemedText variant="headline">AI Daily Summary</ThemedText>
     </View>
-    {text ? <ThemedText variant="subhead" style={{ color: colors.secondaryText }}>{text}</ThemedText> : <ActivityIndicator color={colors.accent} />}
-    <ThemedText variant="caption" style={{ color: colors.tertiaryText }}>오늘의 기록을 바탕으로 정리했어요</ThemedText>
+    {empty ? <>
+      <ThemedText variant="subhead">오늘의 Trace가 아직 비어 있어요.</ThemedText>
+      <ThemedText variant="caption" style={{ color: colors.secondaryText }}>하루를 보내면 방문과 사진을 자동으로 정리해드릴게요.</ThemedText>
+    </> : text ? <ThemedText variant="subhead" style={{ color: colors.secondaryText }}>{text}</ThemedText> : <ActivityIndicator color={colors.accent} />}
+    <ThemedText variant="caption" style={{ color: colors.tertiaryText }}>{empty ? '방문 기록이 생기면 요약을 만들어 드려요.' : '오늘의 기록을 바탕으로 정리했어요.'}</ThemedText>
   </View>;
 }
 
