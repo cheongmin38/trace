@@ -1,5 +1,4 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { BlurView } from 'expo-blur';
 import { Tabs } from 'expo-router';
 import { useEffect } from 'react';
 import type { ColorValue } from 'react-native';
@@ -38,7 +37,7 @@ function TabIcon({ name, focused, color }: { name: keyof typeof icons; focused: 
 }
 
 export function BottomTabBar() {
-  const { colors, isDark } = useTraceTheme();
+  const { colors } = useTraceTheme();
 
   return (
     <Tabs
@@ -50,8 +49,7 @@ export function BottomTabBar() {
         tabBarInactiveTintColor: colors.tertiaryText,
         tabBarLabelStyle: typography.tabLabel,
         tabBarItemStyle: styles.item,
-        tabBarStyle: [styles.bar, { borderColor: colors.border, backgroundColor: colors.surfaceGlass, boxShadow: shadow.raised }],
-        tabBarBackground: () => <BlurView intensity={84} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />,
+        tabBarStyle: [styles.bar, { borderColor: colors.border, backgroundColor: colors.surface, boxShadow: shadow.tab }],
       }}
     >
       {(Object.keys(labels) as (keyof typeof labels)[]).map((name) => (
@@ -70,18 +68,10 @@ export function BottomTabBar() {
 
 const styles = StyleSheet.create({
   bar: {
-    position: 'absolute',
-    height: 76,
-    left: 12,
-    right: 12,
-    bottom: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 26,
-    borderCurve: 'continuous',
-    overflow: 'hidden',
-    backgroundColor: 'transparent',
-    paddingTop: 5,
-    paddingBottom: 5,
+    height: 66,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: 4,
+    paddingBottom: 4,
   },
   item: { paddingVertical: 3 },
   iconSlot: { height: 32, minWidth: 44, alignItems: 'center', justifyContent: 'center', gap: 2, position: 'relative' },
