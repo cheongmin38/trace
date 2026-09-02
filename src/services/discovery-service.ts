@@ -78,7 +78,7 @@ export function getMonthlyReview(places: Place[], visits: Visit[], memories: Mem
   return {
     year,
     month,
-    placeCount: new Set(monthMemories.map((memory) => memory.placeId)).size,
+    placeCount: new Set(monthVisits.map((visit) => visit.placeId)).size,
     memoryCount: monthMemories.length,
     photoCount: new Set(monthMemories.flatMap((memory) => memory.photos.map((photo) => photo.id))).size,
     mostVisitedPlace,

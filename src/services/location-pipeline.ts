@@ -20,12 +20,16 @@ export async function synchronizePersistedLocationData(): Promise<void> {
   ]);
   const trackedPlaces = await placeRepository.getPlaces();
   const userId = useAuthStore.getState().user?.id;
-  let places = trackedPlaces;
-  let visits = trackedVisits;
-  let memories = trackedMemories;
-  if (isSupabaseConfigured && userId && !userId.startsWith('mock-')) {
+  const hasCloudAccount = isSupabaseConfigured && Boolean(userId) && !userId?.startsWith('mock-');
+  const scopedUserId = hasCloudAccount ? userId as string : undefined;
+  // Local records remain available offline, but a signed-in account must never
+  // momentarily see another account's device cache while cloud data loads.
+  let places = scopedUserId ? trackedPlaces.filter((place) => place.userId === scopedUserId) : trackedPlaces;
+  let visits = scopedUserId ? trackedVisits.filter((visit) => visit.userId === scopedUserId) : trackedVisits;
+  let memories = scopedUserId ? trackedMemories.filter((memory) => memory.userId === scopedUserId) : trackedMemories;
+  if (scopedUserId) {
     try {
-      const cloud = await loadCloudTraceData(userId);
+      const cloud = await loadCloudTraceData(scopedUserId);
       if (cloud) ({ places, visits, memories } = cloud);
     } catch (error) {
       // Local-first remains usable while the API is unavailable.

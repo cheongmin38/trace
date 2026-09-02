@@ -11,6 +11,7 @@ import { ThemedText } from '@/components/themed-text';
 import { restoreLocationTracking } from '@/services/location-service';
 import { synchronizePersistedLocationData } from '@/services/location-pipeline';
 import { useAuthStore } from '@/store/auth-store';
+import { useAppStore } from '@/store/app-store';
 import { useLocationStore } from '@/store/location-store';
 import { shadow, spacing, useTraceTheme } from '@/theme';
 
@@ -28,7 +29,12 @@ export default function RootLayout() {
   useEffect(() => { void restoreSession(); }, [restoreSession]);
   useEffect(() => { void restoreLocationTracking(); }, []);
   useEffect(() => {
-    if (authInitialized && isAuthenticated) void synchronizePersistedLocationData();
+    if (!authInitialized || !isAuthenticated) return;
+    useAppStore.getState().setDataHydrated(false);
+    void synchronizePersistedLocationData().catch((error) => {
+      console.error('Trace data hydration failed', error);
+      useAppStore.getState().setDataHydrated(true);
+    });
   }, [authInitialized, isAuthenticated]);
   useEffect(() => {
     if (authInitialized && locationInitialized) void SplashScreen.hideAsync();

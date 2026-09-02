@@ -37,6 +37,7 @@ type AppState = {
   searchQuery: string;
   settings: AppSettings;
   userStats: UserStats;
+  dataHydrated: boolean;
   selectPlace: (placeId: string | null) => void;
   selectMemory: (memoryId: string | null) => void;
   addPlace: (place: Place) => void;
@@ -44,6 +45,7 @@ type AppState = {
   updateVisit: (visit: Visit) => Visit;
   removeVisit: (visitId: string) => boolean;
   hydrateTrackedData: (places: Place[], visits: Visit[], memories?: Memory[]) => void;
+  setDataHydrated: (dataHydrated: boolean) => void;
   resetTrackedData: () => void;
   addMemory: (memory: Memory) => void;
   removeMemory: (memoryId: string) => boolean;
@@ -78,6 +80,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   searchQuery: '',
   settings: defaultSettings,
   userStats: deriveUserStats(initialPlaces, initialMemories, initialVisits),
+  dataHydrated: demoDataEnabled,
 
   selectPlace: (selectedPlaceId) => set({ selectedPlaceId }),
   selectMemory: (selectedMemoryId) => {
@@ -140,14 +143,16 @@ export const useAppStore = create<AppState>((set, get) => ({
       };
     });
     const photosById = new Map(memories.flatMap((memory) => memory.photos).map((photo) => [photo.id, photo]));
-    return { places, visits, memories, photos: [...photosById.values()], userStats: deriveUserStats(places, memories, visits) };
+    return { places, visits, memories, photos: [...photosById.values()], userStats: deriveUserStats(places, memories, visits), dataHydrated: true };
   }),
+  setDataHydrated: (dataHydrated) => set({ dataHydrated }),
   resetTrackedData: () => set(() => ({
     places: initialPlaces,
     visits: initialVisits,
     memories: initialMemories,
     photos: initialPhotos,
     currentLocation: null,
+    dataHydrated: true,
     userStats: deriveUserStats(initialPlaces, initialMemories, initialVisits),
   })),
   addMemory: (memory) => set((state) => {

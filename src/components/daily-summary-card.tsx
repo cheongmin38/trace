@@ -7,7 +7,7 @@ import { generateDailySummary } from '@/services/daily-summary-service';
 import { useAppStore } from '@/store/app-store';
 import { radius, shadow, spacing, useTraceTheme } from '@/theme';
 
-export function DailySummaryCard({ date = new Date().toISOString().slice(0, 10), style }: { date?: string; style?: ComponentProps<typeof View>['style'] }) {
+export function DailySummaryCard({ date = new Date().toISOString().slice(0, 10), inline = false, style }: { date?: string; inline?: boolean; style?: ComponentProps<typeof View>['style'] }) {
   const { colors } = useTraceTheme();
   const visits = useAppStore((state) => state.visits);
   const places = useAppStore((state) => state.places);
@@ -30,7 +30,7 @@ export function DailySummaryCard({ date = new Date().toISOString().slice(0, 10),
   }, [date, dayPhotos, dayVisits, places]);
 
   const empty = dayVisits.length === 0;
-  return <View style={[styles.card, { backgroundColor: colors.surfaceGlass, borderColor: colors.border, boxShadow: shadow.soft }, style]}>
+  return <View style={[inline ? styles.inline : styles.card, !inline && { backgroundColor: colors.surfaceGlass, borderColor: colors.border, boxShadow: shadow.soft }, style]}>
     <View pointerEvents="none" style={[styles.glow, { backgroundColor: colors.accentSoft }]} />
     <View style={styles.titleLine}>
       <View style={[styles.icon, { backgroundColor: colors.accentSoft }]}><Ionicons name="sparkles" size={14} color={colors.accent} /></View>
@@ -49,4 +49,5 @@ const styles = StyleSheet.create({
   glow: { position: 'absolute', width: 118, height: 118, borderRadius: radius.full, right: -44, bottom: -64, opacity: 0.72 },
   titleLine: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   icon: { width: 28, height: 28, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center' },
+  inline: { gap: spacing.xs, paddingTop: spacing.sm, borderTopWidth: StyleSheet.hairlineWidth, borderColor: 'rgba(255,255,255,0.22)' },
 });
